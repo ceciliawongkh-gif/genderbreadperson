@@ -20,7 +20,6 @@
         .value-display { font-size: 1.2em; color: #ff1493; margin-left: 10px; font-weight: bold; }
         @media (max-width: 768px) { .slider-container { flex-direction: column; align-items: flex-start; } .label { margin-bottom: 5px; } }
         .instructions { background: #e8f4fd; padding: 15px; border-radius: 8px; margin-top: 20px; font-style: italic; }
-        .loading { text-align: center; color: #666; font-style: italic; }
     </style>
 </head>
 <body>
@@ -31,7 +30,6 @@
     
     <div id="canvas-container">
         <canvas id="genderCanvas" width="600" height="722"></canvas>
-        <div id="loading" class="loading" style="display: none;">Loading image and initializing morph...</div>
     </div>
     
     <div class="slider-section">
@@ -81,124 +79,108 @@
     <script>
         const canvas = document.getElementById('genderCanvas');
         const ctx = canvas.getContext('2d');
-        const loading = document.getElementById('loading');
-        
         const img = new Image();
-        img.crossOrigin = 'anonymous'; // For external image CORS
-        img.src = 'https://sexualityhub.hk/wp-content/uploads/2022/05/printable-genderbread-person-c-a5-1024x722-1.jpg';
+        img.src = './printable-genderbread-person-c-a5-1024x722-1.jpg';
         
-        let gi = 50, ge = 50, sex = 50, so = 50;
-        let imageLoaded = false;
+        let gi = 50, ge = 50, sex = 50, so = 50; // Default values
         
-        img.onload = () => {
-            imageLoaded = true;
-            loading.style.display = 'none';
-            drawGenderbread();
-            console.log('Image loaded successfully');
-        };
-        
-        img.onerror = (err) => {
-            console.error('Image load failed:', err);
-            loading.textContent = 'Image failed to load. Check console.';
-            loading.style.color = 'red';
-        };
+        // Load base image and draw
+        img.onload = () => drawGenderbread();
         
         function drawGenderbread() {
-            if (!imageLoaded) return;
-            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             
-            const giNorm = gi / 100;
-            const geNorm = ge / 100;
+            const giNorm = gi / 100; // 0 woman -> 1 man
+            const geNorm = ge / 100; // 0 fem -> 1 masc
             
-            // Hair overlay: long flowing (woman/fem) -> short (man/masc)
-            ctx.fillStyle = `hsla(${240 + giNorm * 60}, 60%, 40%, 0.6)`;
-            const hairHeight = 80 + (1 - (giNorm + geNorm)/2) * 100;
+            // 1. Hair: long flowing (woman/fem) -> short spiky (man/masc)
+            ctx.fillStyle = `hsl(${240 + giNorm * 60}, 60%, ${40 + giNorm * 20}%)`; // Blue to purple-ish
+            const hairHeight = 80 + (1 - (giNorm + geNorm)/2) * 120; // Taller hair when more woman/fem
             ctx.beginPath();
-            ctx.arc(canvas.width/2, 60, 110, 0, Math.PI * 2);
+            ctx.arc(canvas.width/2, 50, 120, 0, Math.PI * 2);
             ctx.fill();
-            
-            // Hair details
-            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-            ctx.lineWidth = 2;
-            for (let i = 0; i < 8 + geNorm * 4; i++) {
+            // Hair strands based on expression
+            for (let i = 0; i < 10 + geNorm * 5; i++) {
+                ctx.strokeStyle = ctx.fillStyle + '80';
+                ctx.lineWidth = 3 - geNorm;
                 ctx.beginPath();
-                ctx.moveTo(canvas.width/2 + (Math.sin(i) * 100), 60);
-                ctx.lineTo(canvas.width/2 + (Math.sin(i+1) * 80), hairHeight);
+                ctx.moveTo(canvas.width/2 + (Math.random()-0.5)*200, 50 + (Math.random()-0.5)*50);
+                ctx.lineTo(canvas.width/2 + (Math.random()-0.5)*150, hairHeight);
                 ctx.stroke();
             }
             
-            // Face shape overlay
-            ctx.fillStyle = 'rgba(255,218,185,0.8)';
+            // 2. Face shape: soft round (woman) -> angular jaw (man)
             ctx.save();
-            ctx.translate(canvas.width/2, 160);
-            ctx.scale(1, 1 + giNorm * 0.15);
+            ctx.translate(canvas.width/2, 150);
+            ctx.scale(1, 1 + giNorm * 0.2); // Elongate for man
+            ctx.fillStyle = '#ffdab9';
             ctx.beginPath();
-            ctx.arc(0, 0, 70, 0, Math.PI * 2);
+            ctx.arc(0, 0, 80 - giNorm * 20, 0, Math.PI * 2); // Smaller head for masc?
             ctx.fill();
             ctx.restore();
             
-            // Body shape overlay
-            ctx.fillStyle = 'rgba(255,219,172,0.7)';
+            // Eyes/mouth neutral
+            
+            // 3. Body: curvy hourglass (woman/fem) -> broad shoulders/triangular (man/masc)
+            ctx.fillStyle = '#ffdbac';
             ctx.beginPath();
-            const shoulderW = 130 + geNorm * 70;
-            const waistW = 90 - (1-giNorm)*30;
-            const hipW = 130 + (1-giNorm)*30 - geNorm*20;
-            ctx.moveTo(canvas.width/2 - shoulderW/2, 240);
-            ctx.lineTo(canvas.width/2 + shoulderW/2, 240);
-            ctx.quadraticCurveTo(canvas.width/2 + 50, 380, canvas.width/2 + waistW/2, 420);
-            ctx.lineTo(canvas.width/2 - waistW/2, 420);
-            ctx.quadraticCurveTo(canvas.width/2 - 50, 380, canvas.width/2 - shoulderW/2, 240);
+            const shoulderWidth = 140 + geNorm * 80;
+            const waist = 100 - (1 - giNorm) * 40;
+            const hips = 140 + (1 - giNorm) * 40 - geNorm * 30;
+            ctx.moveTo(canvas.width/2 - shoulderWidth/2, 230);
+            ctx.lineTo(canvas.width/2 + shoulderWidth/2, 230);
+            ctx.quadraticCurveTo(canvas.width/2 + shoulderWidth/2 + 20, 350, canvas.width/2 + waist/2, 400);
+            ctx.lineTo(canvas.width/2 - waist/2, 400);
+            ctx.quadraticCurveTo(canvas.width/2 - shoulderWidth/2 - 20, 350, canvas.width/2 - shoulderWidth/2, 230);
             ctx.closePath();
             ctx.fill();
             
-            // Arms
-            const armThick = 18 + geNorm * 12;
-            ctx.fillStyle = 'rgba(255,219,172,0.7)';
-            ctx.fillRect(canvas.width/2 - shoulderW/2 - armThick/2, 250, armThick, 110);
-            ctx.fillRect(canvas.width/2 + shoulderW/2 - armThick/2, 250, armThick, 110);
+            // Arms: thinner/slender (fem) -> thicker (masc)
+            const armThickness = 20 + geNorm * 15;
+            ctx.fillRect(canvas.width/2 - shoulderWidth/2 - armThickness/2, 240, armThickness, 120);
+            ctx.fillRect(canvas.width/2 + shoulderWidth/2 + armThickness/2 - armThickness, 240, armThickness, 120);
             
-            // Clothing overlay
-            ctx.fillStyle = `hsla(${300 - giNorm * 120}, 70%, 55%, 0.5)`;
-            if ((1 - giNorm - geNorm) / 2 > 0.25) {
-                // Dress
+            // 4. Clothing: dress/skirt (woman/fem) -> pants/shirt (man/masc)
+            ctx.fillStyle = `hsl(${300 - giNorm * 120}, 70%, ${50 - geNorm * 20}%)`; // Pink to blue, lighter for masc
+            if ((1 - giNorm - geNorm)/2 > 0.3) { // Dress if more woman/fem
                 ctx.beginPath();
-                ctx.ellipse(canvas.width/2, 470, hipW/2 * 1.1, 130, 0, 0, Math.PI * 2);
+                ctx.ellipse(canvas.width/2, 450, hips/2 * 1.2, 150, 0, 0, Math.PI * 2);
                 ctx.fill();
-            } else {
-                // Shirt/pants
-                ctx.fillRect(canvas.width/2 - 55, 245, 110, 130);
-                ctx.fillRect(canvas.width/2 - 25, 395, 50, 100);
+            } else { // Shirt + pants
+                ctx.fillRect(canvas.width/2 - 60, 230, 120, 150); // Shirt
+                ctx.fillRect(canvas.width/2 - 30, 380, 60, 120); // Pants
             }
             
-            // Sex symbols (subtle)
+            // 5. Sex symbols overlay subtle
             const sexNorm = sex / 100;
-            ctx.globalAlpha = 0.4;
-            ctx.font = 'bold 55px Arial';
-            ctx.fillStyle = 'white';
-            if (sexNorm < 0.4) ctx.fillText('♀', canvas.width * 0.12, canvas.height * 0.78);
-            else if (sexNorm > 0.6) ctx.fillText('♂', canvas.width * 0.82, canvas.height * 0.78);
+            ctx.globalAlpha = 0.3;
+            if (sexNorm < 0.5) {
+                ctx.font = 'bold 60px Arial';
+                ctx.fillText('♀', canvas.width * 0.15, canvas.height * 0.75);
+            } else if (sexNorm > 0.5) {
+                ctx.fillText('♂', canvas.width * 0.85, canvas.height * 0.75);
+            }
             ctx.globalAlpha = 1;
             
-            // Heart (orientation glow)
+            // 6. Heart (sexual orientation): pink glow (women) -> blue glow (men)
             const soNorm = so / 100;
-            const heartX = canvas.width * 0.5;
-            const heartY = 310;
-            ctx.shadowColor = soNorm < 0.5 ? '#ff69b4' : '#4169e1';
-            ctx.shadowBlur = 25;
-            ctx.fillStyle = soNorm < 0.5 ? '#ff1493' : '#1e90ff';
+            const heartX = canvas.width / 2;
+            const heartY = 300;
+            ctx.shadowColor = soNorm < 0.5 ? '#ff69b4' : '#4a90e2';
+            ctx.shadowBlur = 30;
+            ctx.fillStyle = soNorm < 0.5 ? '#ff1493' : '#4169e1';
             ctx.beginPath();
             ctx.moveTo(heartX, heartY);
-            ctx.bezierCurveTo(heartX, heartY-35, heartX-35, heartY-15, heartX-25, heartY+5);
-            ctx.bezierCurveTo(heartX-35, heartY+35, heartX, heartY+45, heartX, heartY+35);
-            ctx.bezierCurveTo(heartX, heartY+45, heartX+35, heartY+35, heartX+25, heartY+5);
-            ctx.bezierCurveTo(heartX+35, heartY-15, heartX, heartY-35, heartX, heartY);
+            ctx.bezierCurveTo(heartX, heartY - 40, heartX - 40, heartY - 20, heartX - 30, heartY + 10);
+            ctx.bezierCurveTo(heartX - 40, heartY + 40, heartX, heartY + 50, heartX, heartY + 40);
+            ctx.bezierCurveTo(heartX, heartY + 50, heartX + 40, heartY + 40, heartX + 30, heartY + 10);
+            ctx.bezierCurveTo(heartX + 40, heartY - 20, heartX, heartY - 40, heartX, heartY);
             ctx.fill();
             ctx.shadowBlur = 0;
         }
         
-        // Slider event handlers
+        // Slider handlers
         const sliders = {
             genderIdentity: 'gi',
             genderExpression: 'ge',
@@ -208,36 +190,23 @@
         
         Object.keys(sliders).forEach(id => {
             const slider = document.getElementById(id);
-            const valueDisplay = document.getElementById(
-                id === 'genderIdentity' ? 'giValue' :
-                id === 'genderExpression' ? 'geValue' :
-                id === 'biologicalSex' ? 'sexValue' : 'soValue'
-            );
-            const labelLeft = document.getElementById(
-                id === 'genderIdentity' ? 'giLabelLeft' :
-                id === 'genderExpression' ? 'geLabelLeft' :
-                id === 'biologicalSex' ? 'sexLabelLeft' : 'soLabelLeft'
-            );
-            const labelRight = document.getElementById(
-                id === 'genderIdentity' ? 'giLabelRight' :
-                id === 'genderExpression' ? 'geLabelRight' :
-                id === 'biologicalSex' ? 'sexLabelRight' : 'soLabelRight'
-            );
+            const valueDisplay = document.getElementById(id === 'genderIdentity' ? 'giValue' : id === 'genderExpression' ? 'geValue' : id === 'biologicalSex' ? 'sexValue' : 'soValue');
+            const labelLeft = document.getElementById(id === 'genderIdentity' ? 'giLabelLeft' : id === 'genderExpression' ? 'geLabelLeft' : id === 'biologicalSex' ? 'sexLabelLeft' : 'soLabelLeft');
+            const labelRight = document.getElementById(id === 'genderIdentity' ? 'giLabelRight' : id === 'genderExpression' ? 'geLabelRight' : id === 'biologicalSex' ? 'sexLabelRight' : 'soLabelRight');
 
             slider.addEventListener('input', (e) => {
                 const value = parseInt(e.target.value);
                 window[sliders[id]] = value;
                 valueDisplay.textContent = `${value}%`;
                 const leftPct = 100 - value;
-                labelLeft.textContent = `${leftPct}% ${labelLeft.textContent.split('%')[1]?.trim() || ''}`;
-                labelRight.textContent = `${value}% ${labelRight.textContent.split('%')[1]?.trim() || ''}`;
+                labelLeft.textContent = `${leftPct}% ${labelLeft.textContent.split('%')[1] || ''}`;
+                labelRight.textContent = `${value}% ${labelRight.textContent.split('%')[1] || ''}`;
                 drawGenderbread();
             });
-            // Initial update
-            slider.dispatchEvent(new Event('input'));
         });
         
-        loading.style.display = 'block';
+        // Initial draw after sliders set
+        setTimeout(() => drawGenderbread(), 500);
     </script>
 </body>
 </html>
