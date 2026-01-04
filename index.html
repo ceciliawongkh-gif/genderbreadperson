@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Genderbread Person - Queer Gradients</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Genderbread Person - Queer Gradients</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet">
+  <style>
         :root {
             --pink: #ff69b4;
             --purple: #9370db;
@@ -352,71 +352,71 @@
                 transition-duration: 0.01ms !important;
             }
         }
-    </style>
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>The Spectrum of Gender</h1>
-        <img src="printable-genderbread-person-c-a5-1024x722-1.jpg" alt="Genderbread Person illustration showing spectra of gender identity, expression, biological sex, and attraction" class="genderbread" aria-describedby="credits">
-        
-        <div class="credits" id="credits">
-            Image credit: <a href="https://sexualityhub.hk/2022/05/%E6%80%A7%E5%88%A5%E8%96%91%E9%A4%85%E4%BA%BA/below">sexualityhub.hk</a><br>
-            Updated version: <a href="https://www.itspronouncedmetrosexual.com/2018/10/the-genderbread-person-v4/">itspronouncedmetrosexual.com</a>
-        </div>
-
-        <div class="sliders">
-            <div class="slider-group">
-                <div class="slider-title">Sex assigned at birth</div>
-                <div class="slider-wrapper">
-                    <input type="range" id="sex" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-                    <div class="slider-track-labels">
-                        <span class="left-label">Male/Endosex</span>
-                        <span class="right-label">Female/Endosex</span>
-                    </div>
-                </div>
-            </div>
-            <div class="slider-group">
-                <div class="slider-title">Gender identity</div>
-                <div class="slider-wrapper">
-                    <input type="range" id="identity" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-                    <div class="slider-track-labels">
-                        <span class="left-label">Man/Cis</span>
-                        <span class="right-label">Woman/Cis</span>
-                    </div>
-                </div>
-            </div>
-            <div class="slider-group">
-                <div class="slider-title">Gender expression</div>
-                <div class="slider-wrapper">
-                    <input type="range" id="expression" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-                    <div class="slider-track-labels">
-                        <span class="left-label">Masculine</span>
-                        <span class="right-label">Feminine</span>
-                    </div>
-                </div>
-            </div>
-            <div class="slider-group">
-                <div class="slider-title">Sexual orientation</div>
-                <div class="slider-wrapper">
-                    <input type="range" id="orientation" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-                    <div class="slider-track-labels">
-                        <span class="left-label">Heterosexual</span>
-                        <span class="right-label">Homosexual</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="colorBlob"></div>
-
-        <div class="typing-text">Gender is fluid like gradient colour and it's more than blue and pink.</div>
-
-        <div class="footer">Created by Cecilia Ka Hei WONG for educational use.</div>
+  <div class="container">
+    <h1>The Spectrum of Gender</h1><img src="printable-genderbread-person-c-a5-1024x722-1.jpg" alt="Genderbread Person illustration showing spectra of gender identity, expression, biological sex, and attraction" class="genderbread" aria-describedby="credits">
+    <div class="credits" id="credits">
+      Image credit: <a href="https://sexualityhub.hk/2022/05/%E6%80%A7%E5%88%A5%E8%96%91%E9%A4%85%E4%BA%BA/below">sexualityhub.hk</a><br>
+      Updated version: <a href="https://www.itspronouncedmetrosexual.com/2018/10/the-genderbread-person-v4/">itspronouncedmetrosexual.com</a>
     </div>
-
-    <canvas id="sparkles" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 5;"></canvas>
-
-    <script>
+    <div class="sliders">
+      <div class="slider-group">
+        <div class="slider-title">
+          Sex assigned at birth
+        </div>
+        <div class="slider-wrapper">
+          <input type="range" id="sex" min="0" max="100" value="50" step="5" aria-valuetext="50%">
+          <div class="slider-track-labels">
+            <span class="left-label">Male/Endosex</span> <span class="right-label">Female/Endosex</span>
+          </div>
+        </div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-title">
+          Gender identity
+        </div>
+        <div class="slider-wrapper">
+          <input type="range" id="identity" min="0" max="100" value="50" step="5" aria-valuetext="50%">
+          <div class="slider-track-labels">
+            <span class="left-label">Man/Cis</span> <span class="right-label">Woman/Cis</span>
+          </div>
+        </div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-title">
+          Gender expression
+        </div>
+        <div class="slider-wrapper">
+          <input type="range" id="expression" min="0" max="100" value="50" step="5" aria-valuetext="50%">
+          <div class="slider-track-labels">
+            <span class="left-label">Masculine</span> <span class="right-label">Feminine</span>
+          </div>
+        </div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-title">
+          Sexual orientation
+        </div>
+        <div class="slider-wrapper">
+          <input type="range" id="orientation" min="0" max="100" value="50" step="5" aria-valuetext="50%">
+          <div class="slider-track-labels">
+            <span class="left-label">Heterosexual</span> <span class="right-label">Homosexual</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="colorBlob"></div>
+    <div class="typing-text">
+      Gender is fluid like gradient colour and it's more than blue and pink.
+    </div>
+    <div class="footer">
+      Created by Cecilia Ka Hei WONG for educational use.
+    </div>
+  </div>
+  <canvas id="sparkles" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 5;"></canvas>
+  <script>
         // Slider listeners
         const sliders = ['sex', 'identity', 'expression', 'orientation'];
         sliders.forEach(id => {
@@ -529,6 +529,6 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
-    </script>
+  </script>
 </body>
 </html>
