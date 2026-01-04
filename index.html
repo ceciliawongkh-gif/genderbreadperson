@@ -431,42 +431,20 @@
         });
 
         function updateColorBlob() {
-            // FIXED: Track individual slider colors and blend them
-            const sexVal = parseInt(document.getElementById('sex').value) / 100;
-            const identityVal = parseInt(document.getElementById('identity').value) / 100;
-            const expressionVal = parseInt(document.getElementById('expression').value) / 100;
-            const orientationVal = parseInt(document.getElementById('orientation').value) / 100;
-
-            // HSL for each slider's position
-            // Sex: blue #1E3A8A hsl(217,65%,29%) -> pink #BE185D hsl(340,75%,45%)
-            const sexHue = 217 + (340 - 217) * sexVal;
-            const sexSat = 65 + (75 - 65) * sexVal;
-            const sexLight = 29 + (45 - 29) * sexVal;
-
-            // Identity: #334155 hsl(210,40%,28%) -> #C026D3 hsl(287,75%,55%)
-            const identityHue = 210 + (287 - 210) * identityVal;
-            const identitySat = 40 + (75 - 40) * identityVal;
-            const identityLight = 28 + (55 - 28) * identityVal;
-
-            // Expression: #1F2937 hsl(220,28%,20%) -> #F472B6 hsl(330,80%,65%)
-            const expressionHue = 220 + (330 - 220) * expressionVal;
-            const expressionSat = 28 + (80 - 28) * expressionVal;
-            const expressionLight = 20 + (65 - 20) * expressionVal;
-
-            // Orientation: #EA580C hsl(18,90%,45%) -> #8B5CF6 hsl(261,85%,65%)
-            const orientationHue = 18 + (261 - 18) * orientationVal;
-            const orientationSat = 90 + (85 - 90) * orientationVal;
-            const orientationLight = 45 + (65 - 45) * orientationVal;
-
-            // Average HSL values across sliders
-            const avgHue = (sexHue + identityHue + expressionHue + orientationHue) / 4;
-            const avgSat = (sexSat + identitySat + expressionSat + orientationSat) / 4;
-            const avgLight = (sexLight + identityLight + expressionLight + orientationLight) / 4;
-
+            const values = sliders.map(id => parseInt(document.getElementById(id).value));
+            const avg = values.reduce((a, b) => a + b, 0) / values.length / 100; // 0 to 1
+            // Map: 0 blue (240°), 0.5 purple/rainbow (300°?), 1 pink (320°); use HSL interpolation [web:27][web:37]
+            const hue = 240 + (320 - 240) * avg; // 240 to 320
+            const sat = 50 + 50 * Math.abs(avg - 0.5) * 2; // high at extremes
+            const light = 80 + 10 * (1 - Math.abs(avg - 0.5) * 2); // lighter at center
             const blob = document.getElementById('colorBlob');
-            blob.style.background = `radial-gradient(circle at 30% 30%, hsl(${avgHue}, ${avgSat}%, ${avgLight}%), 
-                                      hsl(${(avgHue + 30) % 360}, ${avgSat + 10}%, ${avgLight - 10}%), 
-                                      hsl(${(avgHue - 30 + 360) % 360}, ${avgSat}%, ${avgLight}))`;
+            blob.style.background = `radial-gradient(circle, hsl(${hue}, ${sat}%, ${light}%), hsl(${hue - 60}, ${sat + 20}%, ${light - 10}%), hsl(${hue + 60}, ${sat}%, ${light}))`;
+            // Update slider tracks dynamically
+            sliders.forEach((id, i) => {
+                const slider = document.getElementById(id);
+                const progress = values[i] / 100;
+                slider.style.background = `linear-gradient(to right, var(--blue) 0%, hsl(${240 + progress * 80}, 70%, 60%) ${progress * 100}%, var(--pink) 100%)`;
+            });
         }
 
         // Sparkle particles on slider move
