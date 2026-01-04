@@ -80,7 +80,20 @@
         const canvas = document.getElementById('genderCanvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
-        img.src = './printable-genderbread-person-c-a5-1024x722-1.jpg';
+        img.src = './printable-genderbread-person-c-a5-1024x722-1.jpg';img.onerror = () => {
+    console.error('Image failed to load! Check path/file.');
+    ctx.fillStyle = 'red';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+    ctx.font = '30px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Image not found: printable-genderbread-person-c-a5-1024x722-1.jpg', canvas.width/2, canvas.height/2);
+};
+img.onload = () => {
+    console.log('Image loaded successfully!');
+    drawGenderbread();
+};
+
         
         let gi = 50, ge = 50, sex = 50, so = 50; // Default values
         
