@@ -16,7 +16,6 @@
             --shimmer-light: rgba(255,255,255,0.3);
         }
 
-        /* SLIDER redesign START */
         .slider-title {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
@@ -39,7 +38,6 @@
 
         .left-label { color: inherit; text-align: left; flex: 1; }
         .right-label { color: inherit; text-align: right; flex: 1; }
-        /* SLIDER redesign END */
 
         * {
             margin: 0;
@@ -142,7 +140,6 @@
             margin-right: auto;
         }
 
-        /* SLIDER redesign START */
         .slider-group {
             background: rgba(255,255,255,0.1);
             padding: 20px;
@@ -255,7 +252,6 @@
             height: 10px;
             border-radius: 10px;
         }
-        /* SLIDER redesign END */
 
         #colorBlob {
             width: 400px;
@@ -315,21 +311,6 @@
             animation: gradientShift 5s ease infinite;
         }
 
-        .music-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(0,0,0,0.5);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            font-family: inherit;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .genderbread {
@@ -349,7 +330,6 @@
                 font-size: 1.5rem;
             }
 
-            /* SLIDER redesign START */
             .slider-title {
                 font-size: 1.1rem;
             }
@@ -357,7 +337,6 @@
             .slider-track-labels {
                 font-size: 0.75rem;
             }
-            /* SLIDER redesign END */
         }
 
         /* Accessibility */
@@ -376,12 +355,6 @@
     </style>
 </head>
 <body>
-    <button class="music-toggle" onclick="toggleMusic()" aria-label="Toggle background music">🎵</button>
-    <audio id="bgMusic" loop>
-        <!-- Optional royalty-free synthwave; replace with actual URL from White Bat Audio or Uppbeat -->
-        <!-- <source src="https://whitebataudio.com/wp-content/uploads/2021/04/Oblivion.mp3" type="audio/mpeg"> -->
-    </audio>
-
     <div class="container">
         <h1>The Spectrum of Gender</h1>
         <img src="printable-genderbread-person-c-a5-1024x722-1.jpg" alt="Genderbread Person illustration showing spectra of gender identity, expression, biological sex, and attraction" class="genderbread" aria-describedby="credits">
@@ -392,7 +365,6 @@
         </div>
 
         <div class="sliders">
-            <!-- SLIDER redesign START -->
             <div class="slider-group">
                 <div class="slider-title">Sex assigned at birth</div>
                 <div class="slider-wrapper">
@@ -433,7 +405,6 @@
                     </div>
                 </div>
             </div>
-            <!-- SLIDER redesign END -->
         </div>
 
         <div id="colorBlob"></div>
@@ -446,7 +417,7 @@
     <canvas id="sparkles" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 5;"></canvas>
 
     <script>
-        // Slider listeners - REMOVED value displays [web:24]
+        // Slider listeners
         const sliders = ['sex', 'identity', 'expression', 'orientation'];
         sliders.forEach(id => {
             const slider = document.getElementById(id);
@@ -460,13 +431,42 @@
         });
 
         function updateColorBlob() {
-            const values = sliders.map(id => parseInt(document.getElementById(id).value));
-            const avg = values.reduce((a, b) => a + b, 0) / values.length / 100;
-            const hue = 240 + (320 - 240) * avg;
-            const sat = 50 + 50 * Math.abs(avg - 0.5) * 2;
-            const light = 80 + 10 * (1 - Math.abs(avg - 0.5) * 2);
+            // FIXED: Track individual slider colors and blend them
+            const sexVal = parseInt(document.getElementById('sex').value) / 100;
+            const identityVal = parseInt(document.getElementById('identity').value) / 100;
+            const expressionVal = parseInt(document.getElementById('expression').value) / 100;
+            const orientationVal = parseInt(document.getElementById('orientation').value) / 100;
+
+            // HSL for each slider's position
+            // Sex: blue #1E3A8A hsl(217,65%,29%) -> pink #BE185D hsl(340,75%,45%)
+            const sexHue = 217 + (340 - 217) * sexVal;
+            const sexSat = 65 + (75 - 65) * sexVal;
+            const sexLight = 29 + (45 - 29) * sexVal;
+
+            // Identity: #334155 hsl(210,40%,28%) -> #C026D3 hsl(287,75%,55%)
+            const identityHue = 210 + (287 - 210) * identityVal;
+            const identitySat = 40 + (75 - 40) * identityVal;
+            const identityLight = 28 + (55 - 28) * identityVal;
+
+            // Expression: #1F2937 hsl(220,28%,20%) -> #F472B6 hsl(330,80%,65%)
+            const expressionHue = 220 + (330 - 220) * expressionVal;
+            const expressionSat = 28 + (80 - 28) * expressionVal;
+            const expressionLight = 20 + (65 - 20) * expressionVal;
+
+            // Orientation: #EA580C hsl(18,90%,45%) -> #8B5CF6 hsl(261,85%,65%)
+            const orientationHue = 18 + (261 - 18) * orientationVal;
+            const orientationSat = 90 + (85 - 90) * orientationVal;
+            const orientationLight = 45 + (65 - 45) * orientationVal;
+
+            // Average HSL values across sliders
+            const avgHue = (sexHue + identityHue + expressionHue + orientationHue) / 4;
+            const avgSat = (sexSat + identitySat + expressionSat + orientationSat) / 4;
+            const avgLight = (sexLight + identityLight + expressionLight + orientationLight) / 4;
+
             const blob = document.getElementById('colorBlob');
-            blob.style.background = `radial-gradient(circle, hsl(${hue}, ${sat}%, ${light}%), hsl(${hue - 60}, ${sat + 20}%, ${light - 10}%), hsl(${hue + 60}, ${sat}%, ${light}))`;
+            blob.style.background = `radial-gradient(circle at 30% 30%, hsl(${avgHue}, ${avgSat}%, ${avgLight}%), 
+                                      hsl(${(avgHue + 30) % 360}, ${avgSat + 10}%, ${avgLight - 10}%), 
+                                      hsl(${(avgHue - 30 + 360) % 360}, ${avgSat}%, ${avgLight}))`;
         }
 
         // Sparkle particles on slider move
@@ -505,15 +505,6 @@
                 if (particles.some(p => p.life > 0)) requestAnimationFrame(animate);
             }
             animate();
-        }
-
-        function toggleMusic() {
-            const audio = document.getElementById('bgMusic');
-            if (audio.paused) {
-                audio.play();
-            } else {
-                audio.pause();
-            }
         }
 
         // Initial update
