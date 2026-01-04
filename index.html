@@ -1,370 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Spectrum of Us 🌈</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --gi-gradient: linear-gradient(90deg, #ffc0cb 0%, #dda0dd 50%, #87ceeb 100%);
-            --ge-gradient: linear-gradient(90deg, #40e0d0 0%, #32cd32 50%, #ee82ee 100%);
-            --sex-gradient: linear-gradient(90deg, #ffdab9 0%, #fffdd0 50%, #4b0082 100%);
-            --so-gradient: linear-gradient(90deg, #ffff00 0%, #ff8c00 50%, #ff00ff 100%);
-            --neon-glow: 0 0 30px rgba(255, 105, 180, 0.7);
-            --soft-glow: 0 0 20px rgba(255, 255, 255, 0.4);
-            --card-shadow: 0 25px 75px rgba(0,0,0,0.25);
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 25%, #4facfe 50%, #00f2fe 75%, #43e97b 100%); 
-            min-height: 100vh; 
-            color: #2d1b69; 
-            line-height: 1.7;
-            position: relative;
-            overflow-x: hidden;
-        }
-        body::before {
-            content: ''; 
-            position: fixed; inset: 0; 
-            background: 
-                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(120,119,198,0.15) 0%, transparent 50%);
-            animation: bgFloat 20s ease-in-out infinite;
-            z-index: -1;
-        }
-        @keyframes bgFloat {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            33% { transform: scale(1.05) rotate(120deg); }
-            66% { transform: scale(0.98) rotate(240deg); }
-        }
-
-        .container { max-width: 1250px; margin: 0 auto; padding: 50px 25px; }
-
-        header { text-align: center; margin-bottom: 70px; }
-        h1 { 
-            font-size: clamp(3.5rem, 9vw, 6rem); 
-            font-weight: 800; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); 
-            -webkit-background-clip: text; 
-            background-clip: text; 
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 25px;
-            filter: drop-shadow(0 10px 30px rgba(255,105,180,0.4));
-        }
-        .intro { 
-            font-size: 1.45rem; 
-            font-weight: 400; 
-            max-width: 900px; 
-            margin: 0 auto 50px; 
-            background: rgba(255,255,255,0.85); 
-            padding: 35px 50px; 
-            border-radius: 30px; 
-            box-shadow: var(--card-shadow); 
-            backdrop-filter: blur(20px);
-        }
-
-        .genderbread-section { text-align: center; margin-bottom: 90px; }
-        .genderbread-frame { 
-            display: inline-block; 
-            padding: 20px; 
-            background: rgba(255,255,255,0.25); 
-            border-radius: 40px; 
-            box-shadow: var(--card-shadow), var(--soft-glow);
-            margin-bottom: 25px;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .genderbread-frame:hover { transform: scale(1.03); }
-        #genderbread-img { 
-            max-width: 100%; 
-            width: 1024px; 
-            height: 722px; 
-            object-fit: contain; 
-            border-radius: 25px;
-        }
-        .attribution { 
-            font-size: 1rem; 
-            opacity: 0.9; 
-            background: rgba(255,255,255,0.7); 
-            padding: 20px 35px; 
-            border-radius: 20px; 
-            backdrop-filter: blur(15px);
-        }
-        .attribution a { color: #764ba2; text-decoration: none; font-weight: 600; }
-
-        .sliders-container { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); 
-            gap: 40px; 
-            margin-bottom: 100px; 
-        }
-        .slider-panel { 
-            background: rgba(255,255,255,0.2); 
-            backdrop-filter: blur(25px); 
-            border: 1px solid rgba(255,255,255,0.4); 
-            border-radius: 30px; 
-            padding: 45px; 
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
-        }
-        .slider-panel:hover { 
-            transform: translateY(-12px); 
-            box-shadow: 0 40px 100px rgba(0,0,0,0.35), var(--neon-glow);
-        }
-        .slider-header {
-            font-size: 1.75rem; 
-            font-weight: 700; 
-            margin-bottom: 35px; 
-            text-align: center; 
-            position: relative;
-        }
-        .info-icon {
-            position: absolute; right: 0; top: 0; 
-            font-size: 1.5rem; cursor: help; 
-            background: rgba(255,255,255,0.3); border-radius: 50%; 
-            width: 40px; height: 40px; display: flex; align-items: center; 
-            justify-content: center; opacity: 0.8;
-        }
-        .tooltip-text {
-            position: absolute; top: -75px; right: 0; 
-            background: linear-gradient(135deg, #667eea, #764ba2); 
-            color: white; padding: 15px 20px; 
-            border-radius: 15px; font-size: 0.95rem; 
-            white-space: nowrap; opacity: 0; visibility: hidden;
-            transform: translateY(15px); transition: all 0.25s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 100;
-            font-weight: 500;
-        }
-        .info-icon:hover + .tooltip-text { 
-            opacity: 1; visibility: visible; transform: translateY(0);
-        }
-        
-        .slider-wrapper { 
-            display: flex; align-items: center; 
-            background: rgba(255,255,255,0.15); 
-            padding: 30px 35px; 
-            border-radius: 25px; 
-            margin-bottom: 25px;
-        }
-        input[type="range"] { 
-            flex: 1; height: 16px; border-radius: 12px; 
-            outline: none; -webkit-appearance: none; 
-            margin: 0 25px; transition: background 0.3s ease;
-        }
-        .gi-slider { background: var(--gi-gradient); }
-        .ge-slider { background: var(--ge-gradient); }
-        .sex-slider { background: var(--sex-gradient); }
-        .so-slider { background: var(--so-gradient); }
-        input[type="range"]::-webkit-slider-thumb { 
-            -webkit-appearance: none; width: 40px; height: 40px; 
-            border-radius: 50%; cursor: pointer; 
-            box-shadow: var(--neon-glow), 0 6px 20px rgba(0,0,0,0.3);
-            border: 4px solid white;
-        }
-        input[type="range"]::-moz-range-thumb { 
-            width: 40px; height: 40px; border-radius: 50%; 
-            cursor: pointer; box-shadow: var(--neon-glow); 
-            border: 4px solid white;
-        }
-        .spectrum-label { 
-            font-weight: 600; font-size: 1.2rem; 
-            min-width: 170px; text-align: center; 
-            color: #2d1b69;
-        }
-        .current-value { 
-            font-size: 2.8rem; font-weight: 800; 
-            min-width: 100px; text-align: center; 
-            background: linear-gradient(135deg, #667eea, #764ba2); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent;
-        }
-
-        .color-viz-section { text-align: center; margin: 100px 0; }
-        #spectrum-color { 
-            width: 500px; height: 300px; 
-            margin: 0 auto 45px; 
-            border-radius: 40px; 
-            box-shadow: var(--card-shadow), var(--neon-glow), inset 0 0 60px rgba(255,255,255,0.4);
-            position: relative; overflow: hidden;
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        #spectrum-color::before {
-            content: ''; position: absolute; inset: 0; 
-            background: linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.6) 50%, transparent 52%);
-            animation: shine 3s linear infinite;
-            transform: translateX(-100%) translateY(-100%) rotate(45deg);
-        }
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-        .color-caption { 
-            font-size: 1.8rem; font-weight: 700; 
-            margin-bottom: 20px; color: #2d1b69;
-        }
-        .unique-mantra { 
-            font-size: 1.45rem; 
-            font-weight: 400; 
-            background: rgba(255,255,255,0.85); 
-            padding: 30px 60px; 
-            border-radius: 25px; 
-            box-shadow: var(--card-shadow); 
-            backdrop-filter: blur(20px);
-        }
-
-        .action-section { text-align: center; margin-top: 80px; padding-bottom: 60px; }
-        .share-btn { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            color: white; border: none; 
-            padding: 22px 70px; font-size: 1.45rem; 
-            font-weight: 700; border-radius: 60px; 
-            cursor: pointer; box-shadow: var(--card-shadow), var(--neon-glow);
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .share-btn:hover { 
-            transform: translateY(-8px) scale(1.08); 
-            box-shadow: 0 45px 120px rgba(0,0,0,0.4), 0 0 50px rgba(255,105,180,0.8);
-        }
-        .resources { 
-            margin-top: 40px; 
-            display: flex; justify-content: center; gap: 30px; 
-            flex-wrap: wrap; font-size: 1.1rem;
-        }
-        .resources a { 
-            color: #764ba2; text-decoration: none; 
-            font-weight: 600; padding: 12px 24px; 
-            background: rgba(255,255,255,0.7); 
-            border-radius: 25px; transition: all 0.3s;
-        }
-        .resources a:hover { background: rgba(118,75,162,0.2); transform: translateY(-3px); }
-
-        .creator { 
-            text-align: center; margin-top: 80px; 
-            padding: 40px; background: rgba(255,255,255,0.6); 
-            border-radius: 25px; font-weight: 600; 
-            color: #4a2c7e; font-size: 1.1rem;
-        }
-
-        @media (max-width: 768px) {
-            .sliders-container { grid-template-columns: 1fr; gap: 30px; }
-            #spectrum-color { width: 95vw; height: 250px; }
-            .slider-wrapper { flex-direction: column; gap: 25px; }
-            .resources { flex-direction: column; align-items: center; }
-        }
-    </style>
-</head>
+<!-- [Keep all the existing <head> and <style> unchanged] -->
 <body>
-    <div class="container">
-        <header>
-            <h1>🌈 The Spectrum of Us</h1>
-            <div class="intro">
-                Gender, sex, and sexuality exist on beautiful, fluid spectrums—not rigid binaries. 
-                Adjust the sliders below to discover your unique position and see your personal spectrum color emerge.
-            </div>
-        </header>
-
-        <section class="genderbread-section">
-            <div class="genderbread-frame">
-                <img id="genderbread-img" src="./printable-genderbread-person-c-a5-1024x722-1.jpg" 
-                     alt="The Genderbread Person v4 - an educational illustration depicting the interconnected spectrums of gender identity (brain), gender expression (clothing), biological sex (body), and sexual/romantic orientation (heart). Each exists on a continuum, not binary." 
-                     width="1024" height="722">
-            </div>
-            <div class="attribution">
-                🎨 <strong>Genderbread Person v4</strong> by <a href="https://www.itspronouncedmetrosexual.com/2018/10/the-genderbread-person-v4/" target="_blank">The Genderbread Project</a><br>
-                Current version: <a href="https://sexualityhub.hk/2022/05/%E6%80%A7%E5%88%A5%E8%96%91%E9%A4%85%E4%BA%BA/" target="_blank">Sexuality Hub HK</a>
-            </div>
-        </section>
-
-        <div class="sliders-container">
-            <div class="slider-panel">
-                <div class="slider-header">
-                    💭 Gender Identity
-                    <div class="info-icon" tabindex="0">ℹ️</div>
-                    <div class="tooltip-text">Your internal sense of being woman, man, both, neither, or something else</div>
-                </div>
-                <div class="slider-wrapper">
-                    <div class="spectrum-label" id="giLabelLeft">100% Woman-ness</div>
-                    <input type="range" class="gi-slider" id="genderIdentity" min="0" max="100" value="50">
-                    <div class="current-value" id="giValue">50%</div>
-                    <div class="spectrum-label" id="giLabelRight">100% Man-ness</div>
-                </div>
-            </div>
-
-            <div class="slider-panel">
-                <div class="slider-header">
-                    🎭 Gender Expression
-                    <div class="info-icon" tabindex="0">ℹ️</div>
-                    <div class="tooltip-text">How you present yourself through clothing, behavior, voice</div>
-                </div>
-                <div class="slider-wrapper">
-                    <div class="spectrum-label" id="geLabelLeft">100% Feminine</div>
-                    <input type="range" class="ge-slider" id="genderExpression" min="0" max="100" value="50">
-                    <div class="current-value" id="geValue">50%</div>
-                    <div class="spectrum-label" id="geLabelRight">100% Masculine</div>
-                </div>
-            </div>
-
-            <div class="slider-panel">
-                <div class="slider-header">
-                    🧬 Sex Assigned at Birth
-                    <div class="info-icon" tabindex="0">ℹ️</div>
-                    <div class="tooltip-text">Biological & anatomical characteristics observed at birth</div>
-                </div>
-                <div class="slider-wrapper">
-                    <div class="spectrum-label" id="sexLabelLeft">100% Female</div>
-                    <input type="range" class="sex-slider" id="biologicalSex" min="0" max="100" value="50">
-                    <div class="current-value" id="sexValue">50%</div>
-                    <div class="spectrum-label" id="sexLabelRight">100% Male</div>
-                </div>
-            </div>
-
-            <div class="slider-panel">
-                <div class="slider-header">
-                    ❤️ Sexual Orientation
-                    <div class="info-icon" tabindex="0">ℹ️</div>
-                    <div class="tooltip-text">Patterns of romantic and/or sexual attraction to others</div>
-                </div>
-                <div class="slider-wrapper">
-                    <div class="spectrum-label" id="soLabelLeft">100% Women</div>
-                    <input type="range" class="so-slider" id="sexualOrientation" min="0" max="100" value="50">
-                    <div class="current-value" id="soValue">50%</div>
-                    <div class="spectrum-label" id="soLabelRight">100% Men</div>
-                </div>
-            </div>
-        </div>
-
-        <section class="color-viz-section">
-            <div id="spectrum-color"></div>
-            <h2 class="color-caption">Your Unique Spectrum Color</h2>
-            <div class="unique-mantra">
-                ✨ Your color is uniquely yours — beyond pink or blue ✨
-            </div>
-        </section>
-
-        <section class="action-section">
-            <button class="share-btn" onclick="shareMySpectrum()">
-                🎨 Save or Share My Color
-            </button>
-            <div class="resources">
-                <a href="https://www.itspronouncedmetrosexual.com/2018/10/the-genderbread-person-v4/" target="_blank">
-                    Official Genderbread v4
-                </a>
-                <a href="https://sexualityhub.hk/2022/05/%E6%80%A7%E5%88%A5%E8%96%91%E9%A4%85%E4%BA%BA/" target="_blank">
-                    Sexuality Hub HK Version
-                </a>
-            </div>
-        </section>
-
-        <div class="creator">
-            Created by <strong>Cecilia Ka Hei WONG</strong> for Educational Use Only
-        </div>
-    </div>
-
+    <!-- [Keep all HTML content unchanged until the <script>] -->
+    
     <script>
-        let gi = 50, ge = 50, sex = 50, so = 50;
+        // Fixed state management - use object to avoid conflicts
+        const spectrumState = {
+            gi: 50, ge: 50, sex: 50, so: 50
+        };
 
         function updateSliderLabels(sliderId, value) {
             const mappings = {
@@ -374,51 +17,107 @@
                 'sexualOrientation': { left: 'soLabelLeft', right: 'soLabelRight', value: 'soValue' }
             };
             const m = mappings[sliderId];
-            document.getElementById(m.left).textContent = `${100-value}% ${document.getElementById(m.left).textContent.split('%')[1] || ''}`;
-            document.getElementById(m.right).textContent = `${value}% ${document.getElementById(m.right).textContent.split('%')[1] || ''}`;
-            document.getElementById(m.value).textContent = `${value}%`;
+            if (m) {
+                document.getElementById(m.left).textContent = `${100-value}% ${document.getElementById(m.left).textContent.split('%')[1]?.trim() || ''}`;
+                document.getElementById(m.right).textContent = `${value}% ${document.getElementById(m.right).textContent.split('%')[1]?.trim() || ''}`;
+                document.getElementById(m.value).textContent = `${value}%`;
+            }
         }
 
-        ['genderIdentity', 'genderExpression', 'biologicalSex', 'sexualOrientation'].forEach(id => {
-            document.getElementById(id).addEventListener('input', (e) => {
-                const value = parseInt(e.target.value);
-                window[id.replace(/([A-Z])/g, l => l.toLowerCase())] = value;
-                updateSliderLabels(id, value);
-                updateSpectrumColor();
-            });
-        });
-
         function updateSpectrumColor() {
-            // Composite RGB from 4 sliders: gi=R, ge=G, sex=B, so=modifier
+            const { gi, ge, sex, so } = spectrumState;
             const r = Math.round((gi / 100) * 255);
             const g = Math.round((ge / 100) * 255);
             const b = Math.round((sex / 100) * 255);
-            const modifier = so / 100 * 0.3; // Saturation boost
+            const modifier = (so / 100) * 0.4; // Slight boost for vibrancy
+            
             const patch = document.getElementById('spectrum-color');
-            patch.style.background = `radial-gradient(circle, 
-                rgb(${Math.min(255, r + 50*modifier)}, ${Math.min(255, g + 50*modifier)}, ${Math.min(255, b + 50*modifier)}),
-                rgb(${r}, ${g}, ${b}), 
-                rgb(${Math.max(0, r-60)}, ${Math.max(0, g-60)}, ${Math.max(0, b-60)}))`;
+            const brightR = Math.min(255, r + Math.round(60 * modifier));
+            const brightG = Math.min(255, g + Math.round(60 * modifier));
+            const brightB = Math.min(255, b + Math.round(60 * modifier));
+            const darkR = Math.max(0, r - 40);
+            const darkG = Math.max(0, g - 40);
+            const darkB = Math.max(0, b - 40);
+            
+            patch.style.background = `radial-gradient(circle at center, 
+                rgb(${brightR}, ${brightG}, ${brightB}) 0%, 
+                rgb(${r}, ${g}, ${b}) 50%, 
+                rgb(${darkR}, ${darkG}, ${darkB}) 100%)`;
+            
+            // Debug log (remove in production)
+            console.log(`Spectrum: GI:${gi}(${r}) GE:${ge}(${g}) Sex:${sex}(${b}) SO:${so} -> rgb(${r},${g},${b})`);
         }
+
+        // Corrected event listeners with proper state updates
+        document.getElementById('genderIdentity').addEventListener('input', (e) => {
+            spectrumState.gi = parseInt(e.target.value);
+            updateSliderLabels('genderIdentity', spectrumState.gi);
+            updateSpectrumColor();
+        });
+
+        document.getElementById('genderExpression').addEventListener('input', (e) => {
+            spectrumState.ge = parseInt(e.target.value);
+            updateSliderLabels('genderExpression', spectrumState.ge);
+            updateSpectrumColor();
+        });
+
+        document.getElementById('biologicalSex').addEventListener('input', (e) => {
+            spectrumState.sex = parseInt(e.target.value);
+            updateSliderLabels('biologicalSex', spectrumState.sex);
+            updateSpectrumColor();
+        });
+
+        document.getElementById('sexualOrientation').addEventListener('input', (e) => {
+            spectrumState.so = parseInt(e.target.value);
+            updateSliderLabels('sexualOrientation', spectrumState.so);
+            updateSpectrumColor();
+        });
 
         function shareMySpectrum() {
-            const rgb = `rgb(${Math.round(gi/100*255)}, ${Math.round(ge/100*255)}, ${Math.round(sex/100*255)})`;
-            const shareText = `🌈 My Spectrum Color: ${rgb}\nGI:${gi}% GE:${ge}% Sex:${sex}% SO:${so}%\n#SpectrumOfUs`;
-            navigator.clipboard.writeText(shareText).then(() => {
-                // Create temporary download link
-                const link = document.createElement('a');
-                link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(shareText)}`;
-                link.download = `my-spectrum-${Date.now()}.txt`;
-                link.click();
-                alert('✅ Color saved & copied to clipboard!');
-            }).catch(() => alert('Spectrum copied!'));
+            const { gi, ge, sex, so } = spectrumState;
+            const r = Math.round((gi / 100) * 255);
+            const g = Math.round((ge / 100) * 255);
+            const b = Math.round((sex / 100) * 255);
+            const shareText = `🌈 My Spectrum Color: rgb(${r}, ${g}, ${b})\nGI:${gi}% | GE:${ge}% | Sex:${sex}% | SO:${so}%\n#SpectrumOfUs\nTheSpectrumOfUs.com`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    downloadSwatch(r, g, b);
+                    alert('✅ Color copied & swatch downloaded!');
+                });
+            } else {
+                downloadSwatch(r, g, b);
+                prompt('Copy this:', shareText);
+            }
         }
 
-        // Initialize
+        function downloadSwatch(r, g, b) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 400; canvas.height = 250;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+            ctx.fillRect(0, 0, 400, 250);
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 24px Poppins';
+            ctx.textAlign = 'center';
+            ctx.fillText(`rgb(${r}, ${g}, ${b})`, 200, 120);
+            
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL();
+            link.download = `spectrum-swatch-${Date.now()}.png`;
+            link.click();
+        }
+
+        // Initialize everything
         updateSpectrumColor();
-        ['genderIdentity','genderExpression','biologicalSex','sexualOrientation'].forEach(id => updateSliderLabels(id, 50));
+        ['genderIdentity', 'genderExpression', 'biologicalSex', 'sexualOrientation'].forEach(id => {
+            const slider = document.getElementById(id);
+            updateSliderLabels(id, parseInt(slider.value));
+        });
+        
+        // Image error handling
         document.getElementById('genderbread-img').onerror = () => {
-            console.log('Image loading fallback active');
+            console.warn('Genderbread image not found - check repo root');
         };
     </script>
 </body>
