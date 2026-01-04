@@ -1,400 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Spectrum of Us 🌈</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --iridescent-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #fecfef 50%, #a8edea 75%, #fed6e3 100%);
-            --rainbow-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gi-gradient: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
-            --ge-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            --sex-gradient: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            --so-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-            --neon-glow: 0 0 25px rgba(255, 105, 180, 0.6);
-            --soft-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
+<script>
+    function getSliderValue(id) {
+        return parseInt(document.getElementById(id).value);
+    }
+    
+    function updateLabels(sliderId, value) {
+        const leftId = sliderId === 'genderIdentity' ? 'giLabelLeft' :
+                      sliderId === 'genderExpression' ? 'geLabelLeft' :
+                      sliderId === 'biologicalSex' ? 'sexLabelLeft' : 'soLabelLeft';
+        const rightId = sliderId === 'genderIdentity' ? 'giLabelRight' :
+                       sliderId === 'genderExpression' ? 'geLabelRight' :
+                       sliderId === 'biologicalSex' ? 'giLabelRight' : 'soLabelRight';
+        const leftLabel = document.getElementById(leftId);
+        const rightLabel = document.getElementById(rightId);
+        const leftPct = 100 - value;
+        leftLabel.textContent = `${leftPct}% ${leftLabel.dataset.original || leftLabel.textContent.split('%')[1] || leftLabel.textContent}`;
+        rightLabel.textContent = `${value}% ${rightLabel.dataset.original || rightLabel.textContent.split('%')[1] || rightLabel.textContent}`;
+    }
+    
+    function updateColorViz() {
+        const gi = getSliderValue('genderIdentity');
+        const ge = getSliderValue('genderExpression');
+        const sex = getSliderValue('biologicalSex');
+        const so = getSliderValue('sexualOrientation');
         
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            font-family: 'Nunito', sans-serif; 
-            background: var(--iridescent-gradient); 
-            min-height: 100vh; 
-            color: #2c1810; 
-            line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
-        }
-        body::before {
-            content: ''; 
-            position: fixed; 
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at 20% 80%, rgba(120,119,198,0.3) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(255,119,198,0.3) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 40%, rgba(120,219,255,0.2) 0%, transparent 50%);
-            z-index: -1; animation: shimmer 15s ease-in-out infinite;
-        }
-        @keyframes shimmer {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-        }
+        // Blend all sliders into harmonious hue/saturation
+        const avg = (gi + ge + sex + so) / 4;
+        const hue = (avg * 360 / 100) % 360;
+        const sat = 65 + (Math.sin(Date.now() / 800 + hue / 60) * 15);
+        const light = 55 + (gi / 100 * 15);
         
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        const patch = document.getElementById('colorPatch');
+        patch.style.background = `radial-gradient(circle at 30% 30%, 
+            hsl(${hue}, ${sat}%, ${light + 10}%), 
+            hsl(${(hue + 90 + gi/5)%360}, ${sat + 10}%, ${light}%), 
+            hsl(${(hue + 180 + ge/5)%360}, ${sat}%, ${light - 5}%), 
+            hsl(${(hue + 270 + (sex+so)/10)%360}, ${sat - 10}%, ${light + 5}%)
+        `;
         
-        header { text-align: center; margin-bottom: 60px; }
-        h1 { 
-            font-size: clamp(3rem, 8vw, 5rem); 
-            font-weight: 800; 
-            background: var(--rainbow-primary); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            background-clip: text;
-            margin-bottom: 20px;
-            text-shadow: var(--neon-glow);
-        }
-        .intro { 
-            font-size: 1.4rem; 
-            font-weight: 300; 
-            max-width: 800px; 
-            margin: 0 auto 40px; 
-            opacity: 0.95;
-            background: rgba(255,255,255,0.7); 
-            padding: 25px 40px; 
-            border-radius: 25px; 
-            backdrop-filter: blur(15px);
-        }
-        .attribution { 
-            font-size: 0.95rem; 
-            opacity: 0.8; 
-            font-style: italic; 
-            border: 1px solid rgba(255,255,255,0.3); 
-            padding: 15px 25px; 
-            border-radius: 15px; 
-            background: rgba(255,255,255,0.1);
-        }
+        // Animate shimmer intensity based on sliders
+        patch.style.animationDuration = `${3 + (100 - avg)/50}s`;
+    }
+    
+    ['genderIdentity', 'genderExpression', 'biologicalSex', 'sexualOrientation'].forEach(id => {
+        const slider = document.getElementById(id);
+        const valueDisplay = document.getElementById(id === 'genderIdentity' ? 'giValue' :
+                                                  id === 'genderExpression' ? 'geValue' :
+                                                  id === 'biologicalSex' ? 'sexValue' : 'soValue');
+        const leftLabel = document.getElementById(id === 'genderIdentity' ? 'giLabelLeft' :
+                                               id === 'genderExpression' ? 'geLabelLeft' :
+                                               id === 'biologicalSex' ? 'sexLabelLeft' : 'soLabelLeft');
+        const rightLabel = document.getElementById(id === 'genderIdentity' ? 'giLabelRight' :
+                                                id === 'genderExpression' ? 'geLabelRight' :
+                                                id === 'biologicalSex' ? 'sexLabelRight' : 'soLabelRight');
         
-        .main-visual { 
-            text-align: center; 
-            margin-bottom: 80px; 
-            position: relative;
-        }
-        #genderbread-img { 
-            max-width: 100%; 
-            width: 1024px; 
-            height: 722px; 
-            object-fit: contain; 
-            border-radius: 30px; 
-            box-shadow: var(--soft-shadow), var(--neon-glow);
-            transition: all 0.4s ease;
-        }
-        #genderbread-img:hover { transform: scale(1.02) rotate(1deg); }
-        .visual-frame {
-            position: relative; 
-            display: inline-block; 
-            padding: 15px; 
-            background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1)); 
-            border-radius: 40px; 
-            backdrop-filter: blur(20px);
-        }
+        // Store original labels
+        leftLabel.dataset.original = leftLabel.textContent.split('%')[1]?.trim() || leftLabel.textContent;
+        rightLabel.dataset.original = rightLabel.textContent.split('%')[1]?.trim() || rightLabel.textContent;
         
-        .sliders-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); 
-            gap: 35px; 
-            margin-bottom: 60px; 
-        }
-        .slider-card { 
-            background: rgba(255,255,255,0.15); 
-            backdrop-filter: blur(25px); 
-            border: 1px solid rgba(255,255,255,0.3); 
-            border-radius: 25px; 
-            padding: 40px; 
-            transition: all 0.3s ease;
-            box-shadow: var(--soft-shadow);
-        }
-        .slider-card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: 0 35px 90px rgba(0,0,0,0.4), var(--neon-glow);
-        }
-        .slider-title { 
-            font-size: 1.6rem; 
-            font-weight: 700; 
-            margin-bottom: 25px; 
-            text-align: center; 
-            position: relative;
-        }
-        .tooltip-icon {
-            position: absolute; right: 0; top: -5px; 
-            font-size: 1.4rem; cursor: help; 
-            opacity: 0.7; transition: opacity 0.2s;
-        }
-        .slider-card:hover .tooltip-icon { opacity: 1; }
-        .tooltip {
-            position: absolute; top: -60px; right: 0; 
-            background: rgba(0,0,0,0.85); color: white; 
-            padding: 12px 16px; border-radius: 12px; 
-            font-size: 0.9rem; white-space: nowrap; 
-            opacity: 0; visibility: hidden; 
-            transform: translateY(10px); transition: all 0.2s;
-            z-index: 10; font-weight: 400;
-        }
-        .tooltip-icon:hover + .tooltip,
-        .tooltip-icon:focus + .tooltip { opacity: 1; visibility: visible; transform: translateY(0); }
-        
-        .slider-container { 
-            display: flex; align-items: center; 
-            background: rgba(255,255,255,0.2); 
-            padding: 25px 30px; 
-            border-radius: 20px; 
-            margin-bottom: 20px;
-        }
-        input[type="range"] { 
-            flex: 1; height: 14px; border-radius: 12px; 
-            outline: none; -webkit-appearance: none;
-            margin: 0 20px;
-        }
-        .gi-slider::-webkit-slider-thumb { background: var(--gi-gradient); }
-        .ge-slider::-webkit-slider-thumb { background: var(--ge-gradient); }
-        .sex-slider::-webkit-slider-thumb { background: var(--sex-gradient); }
-        .so-slider::-webkit-slider-thumb { background: var(--so-gradient); }
-        input[type="range"]::-webkit-slider-thumb { 
-            -webkit-appearance: none; width: 35px; height: 35px; 
-            border-radius: 50%; cursor: pointer; 
-            box-shadow: var(--neon-glow), 0 4px 15px rgba(0,0,0,0.3);
-        }
-        input[type="range"]::-moz-range-thumb { 
-            width: 35px; height: 35px; border-radius: 50%; 
-            cursor: pointer; box-shadow: var(--neon-glow);
-        }
-        .label { 
-            font-weight: 600; font-size: 1.15rem; 
-            min-width: 160px; text-align: center;
-        }
-        .value-display { 
-            font-size: 2.2rem; font-weight: 800; 
-            min-width: 80px; text-align: center;
-            background: var(--rainbow-primary); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent;
-        }
-        
-        #color-viz { 
-            text-align: center; 
-            margin: 80px 0; 
-            position: relative;
-        }
-        .color-patch { 
-            width: 400px; height: 250px; 
-            margin: 0 auto 30px; 
-            border-radius: 30px; 
-            box-shadow: var(--soft-shadow), inset 0 0 50px rgba(255,255,255,0.3);
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative; overflow: hidden;
-        }
-        .color-patch::before {
-            content: ''; position: absolute; top: 0; left: -100%; 
-            width: 100%; height: 100%; 
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: sweep 3s infinite;
-        }
-        @keyframes sweep { 100% { left: 100%; } }
-        .spectrum-text { 
-            font-size: 1.6rem; font-weight: 600; 
-            margin-bottom: 15px;
-        }
-        .unique-text { 
-            font-size: 1.3rem; 
-            font-style: italic; opacity: 0.9;
-            background: rgba(255,255,255,0.7); padding: 20px 35px; 
-            border-radius: 20px; backdrop-filter: blur(15px);
-        }
-        
-        .share-section { text-align: center; margin-top: 60px; }
-        .share-btn { 
-            background: var(--rainbow-primary); 
-            color: white; border: none; 
-            padding: 18px 50px; font-size: 1.3rem; 
-            font-weight: 700; border-radius: 50px; 
-            cursor: pointer; box-shadow: var(--soft-shadow), var(--neon-glow);
-            transition: all 0.3s ease;
-        }
-        .share-btn:hover { transform: translateY(-5px) scale(1.05); }
-        
-        @media (max-width: 768px) {
-            .sliders-grid { grid-template-columns: 1fr; }
-            .slider-container { flex-direction: column; gap: 20px; }
-            .color-patch { width: 90vw; height: 200px; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>🌈 The Spectrum of Us</h1>
-            <p class="intro">
-                Gender, sex, and sexuality exist on beautiful spectrums, not rigid binaries. 
-                Slide below to explore your unique position and celebrate the diversity within.
-            </p>
-        </header>
-        
-        <div class="main-visual">
-            <div class="visual-frame">
-                <img id="genderbread-img" src="./printable-genderbread-person-c-a5-1024x722-1.jpg" 
-                     alt="Genderbread Person illustration showing spectrums of gender identity (brain), expression (clothing), biological sex (body), and sexual/romantic orientation (heart). Created by The Genderbread Project for educational purposes." 
-                     width="1024" height="722">
-            </div>
-            <p class="attribution">
-                🎨 <strong>Genderbread Person</strong> by <a href="https://www.itspronouncedmetrosexual.com/genderbread/" style="color: #764ba2; text-decoration: none;">The Genderbread Project</a> 
-                — Open educational resource (CC BY-NC-SA)
-            </p>
-        </div>
-        
-        <div class="sliders-grid">
-            <div class="slider-card">
-                <div class="slider-title">
-                    💭 Gender Identity 
-                    <span class="tooltip-icon" tabindex="0">ℹ️</span>
-                    <div class="tooltip">
-                        How you think & feel about your gender (internal sense)
-                    </div>
-                </div>
-                <div class="slider-container">
-                    <div class="label" id="giLabelLeft">Woman-ness</div>
-                    <input type="range" class="gi-slider" id="genderIdentity" min="0" max="100" value="50" style="background: var(--gi-gradient);">
-                    <div class="value-display" id="giValue">50%</div>
-                    <div class="label" id="giLabelRight">Man-ness</div>
-                </div>
-            </div>
-            
-            <div class="slider-card">
-                <div class="slider-title">
-                    🎭 Gender Expression 
-                    <span class="tooltip-icon" tabindex="0">ℹ️</span>
-                    <div class="tooltip">
-                        How you present yourself externally (clothing, behavior)
-                    </div>
-                </div>
-                <div class="slider-container">
-                    <div class="label" id="geLabelLeft">Feminine</div>
-                    <input type="range" class="ge-slider" id="genderExpression" min="0" max="100" value="50" style="background: var(--ge-gradient);">
-                    <div class="value-display" id="geValue">50%</div>
-                    <div class="label" id="geLabelRight">Masculine</div>
-                </div>
-            </div>
-            
-            <div class="slider-card">
-                <div class="slider-title">
-                    🧬 Sex Assigned at Birth 
-                    <span class="tooltip-icon" tabindex="0">ℹ️</span>
-                    <div class="tooltip">
-                        Biological & anatomical characteristics at birth
-                    </div>
-                </div>
-                <div class="slider-container">
-                    <div class="label" id="sexLabelLeft">Female</div>
-                    <input type="range" class="sex-slider" id="biologicalSex" min="0" max="100" value="50" style="background: var(--sex-gradient);">
-                    <div class="value-display" id="sexValue">50%</div>
-                    <div class="label" id="geLabelRight">Male</div>
-                </div>
-            </div>
-            
-            <div class="slider-card">
-                <div class="slider-title">
-                    ❤️ Sexual Orientation 
-                    <span class="tooltip-icon" tabindex="0">ℹ️</span>
-                    <div class="tooltip">
-                        Patterns of romantic/sexual attraction to others
-                    </div>
-                </div>
-                <div class="slider-container">
-                    <div class="label" id="soLabelLeft">Women</div>
-                    <input type="range" class="so-slider" id="sexualOrientation" min="0" max="100" value="50" style="background: var(--so-gradient);">
-                    <div class="value-display" id="soValue">50%</div>
-                    <div class="label" id="soLabelRight">Men</div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="color-viz">
-            <div class="color-patch" id="colorPatch"></div>
-            <div class="spectrum-text">Your Unique Spectrum Color</div>
-            <p class="unique-text">
-                ✨ Everyone's color is uniquely theirs — beyond pink or blue ✨
-            </p>
-        </div>
-        
-        <div class="share-section">
-            <button class="share-btn" onclick="shareSpectrum()">
-                🎨 Share Your Spectrum
-            </button>
-            <p style="margin-top: 20px; opacity: 0.8; font-size: 0.95rem;">
-                <a href="https://www.itspronouncedmetrosexual.com/genderbread/" style="color: inherit;">Learn more</a> | 
-                <a href="https://www.glaad.org/transgender" style="color: inherit;">LGBTQ+ Resources</a>
-            </p>
-        </div>
-    </div>
-
-    <script>
-        let gi=50, ge=50, sex=50, so=50;
-        
-        function updateLabels(sliderId, value) {
-            const leftId = sliderId === 'genderIdentity' ? 'giLabelLeft' :
-                          sliderId === 'genderExpression' ? 'geLabelLeft' :
-                          sliderId === 'biologicalSex' ? 'sexLabelLeft' : 'soLabelLeft';
-            const rightId = sliderId === 'genderIdentity' ? 'giLabelRight' :
-                           sliderId === 'genderExpression' ? 'geLabelRight' :
-                           sliderId === 'biologicalSex' ? 'giLabelRight' : 'soLabelRight';
-            const leftLabel = document.getElementById(leftId);
-            const rightLabel = document.getElementById(rightId);
-            const leftPct = 100 - value;
-            leftLabel.textContent = `${leftPct}% ${leftLabel.textContent.split('%')[1] || leftLabel.textContent}`;
-            rightLabel.textContent = `${value}% ${rightLabel.textContent.split('%')[1] || rightLabel.textContent}`;
-        }
-        
-        ['genderIdentity', 'genderExpression', 'biologicalSex', 'sexualOrientation'].forEach(id => {
-            document.getElementById(id).addEventListener('input', e => {
-                const value = parseInt(e.target.value);
-                window[id.replace('Identity','').replace('Expression','').toLowerCase()] = value;
-                document.getElementById(id === 'genderIdentity' ? 'giValue' :
-                                      id === 'genderExpression' ? 'geValue' :
-                                      id === 'biologicalSex' ? 'sexValue' : 'soValue').textContent = `${value}%`;
-                updateLabels(id, value);
-                updateColorViz();
-            });
+        slider.addEventListener('input', e => {
+            const value = parseInt(e.target.value);
+            valueDisplay.textContent = `${value}%`;
+            updateLabels(id, value);
+            updateColorViz(); // Now called every time
         });
-        
-        function updateColorViz() {
-            const avg = (gi + ge + sex + so) / 4;
-            const hue = (avg / 100) * 360;
-            const sat = 70 + Math.sin(Date.now() / 1000) * 10;
-            const patch = document.getElementById('colorPatch');
-            patch.style.background = `linear-gradient(135deg, 
-                hsl(${hue}, 80%, 60%), 
-                hsl(${(hue + 60)%360}, 75%, 65%), 
-                hsl(${(hue + 120)%360}, 85%, 55%))`;
-        }
-        
-        function shareSpectrum() {
-            const color = document.getElementById('colorPatch').style.background;
-            const text = `My unique spectrum: GI:${gi}% GE:${ge}% Sex:${sex}% SO:${so}% 🌈 #SpectrumOfUs`;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Spectrum copied to clipboard! ✨');
-            });
-        }
-        
-        // Initial setup
-        updateColorViz();
-        document.getElementById('genderbread-img').onerror = () => {
-            console.warn('Image not found - using placeholder');
-        };
-        
-        // Initial labels
-        updateLabels('genderIdentity', 50);
-        updateLabels('genderExpression', 50);
-        updateLabels('biologicalSex', 50);
-        updateLabels('sexualOrientation', 50);
-    </script>
-</body>
-</html>
+    });
+    
+    function shareSpectrum() {
+        const gi = getSliderValue('genderIdentity');
+        const ge = getSliderValue('genderExpression');
+        const sex = getSliderValue('biologicalSex');
+        const so = getSliderValue('sexualOrientation');
+        const text = `🌈 My Spectrum of Us: Identity ${gi}% | Expression ${ge}% | Sex ${sex}% | Orientation ${so}% #SpectrumOfUs`;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = event.target;
+            const original = btn.textContent;
+            btn.textContent = 'Copied! ✨';
+            setTimeout(() => btn.textContent = original, 2000);
+        }).catch(() => alert(text));
+    }
+    
+    // Initial setup
+    updateColorViz();
+    
+    // Image error handling
+    document.getElementById('genderbread-img').onerror = function() {
+        console.warn('Genderbread image not found');
+        this.src = 'https://via.placeholder.com/1024x722/764ba2/ffffff?text=Upload+Genderbread+Image'; // Fallback
+    };
+</script>
