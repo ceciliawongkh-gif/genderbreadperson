@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Genderbread Person - Queer Gradients</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet">
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Genderbread Person - Queer Gradients</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
         :root {
             --pink: #ff69b4;
             --purple: #9370db;
@@ -258,10 +258,9 @@
             height: 400px;
             margin: 40px auto;
             border-radius: 50%;
-            background: radial-gradient(circle, hsl(0, 50%, 80%), hsl(240, 50%, 80%));
             box-shadow: 0 0 50px hsla(0,0%,100%,0.5);
             animation: pulse 2s ease-in-out infinite;
-            transition: all 0.3s ease;
+            transition: background 0.15s ease;
             position: relative;
             overflow: hidden;
         }
@@ -352,122 +351,123 @@
                 transition-duration: 0.01ms !important;
             }
         }
-  </style>
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>The Spectrum of Gender</h1><img src="printable-genderbread-person-c-a5-1024x722-1.jpg" alt="Genderbread Person illustration showing spectra of gender identity, expression, biological sex, and attraction" class="genderbread" aria-describedby="credits">
-    <div class="credits" id="credits">
-      Image credit: <a href="https://sexualityhub.hk/2022/05/%E6%80%A7%E5%88%A5%E8%96%91%E9%A4%85%E4%BA%BA/below">sexualityhub.hk</a><br>
-      Updated version: <a href="https://www.itspronouncedmetrosexual.com/2018/10/the-genderbread-person-v4/">itspronouncedmetrosexual.com</a>
-    </div>
-    <div class="sliders">
-      <div class="slider-group">
-        <div class="slider-title">
-          Sex assigned at birth
+    <div class="container">
+        <h1>The Spectrum of Gender</h1>
+        <img src="printable-genderbread-person-c-a5-1024x722-1.jpg" alt="Genderbread Person illustration showing spectra of gender identity, expression, biological sex, and attraction" class="genderbread" aria-describedby="credits">
+        
+        <div class="credits" id="credits">
+            Image credit: <a href="https://sexualityhub.hk/2022/05/%E6%80%A7%E5%88%A5%E8%96%91%E9%A4%85%E4%BA%BA/below">sexualityhub.hk</a><br>
+            Updated version: <a href="https://www.itspronouncedmetrosexual.com/2018/10/the-genderbread-person-v4/">itspronouncedmetrosexual.com</a>
         </div>
-        <div class="slider-wrapper">
-          <input type="range" id="sex" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-          <div class="slider-track-labels">
-            <span class="left-label">Male/Endosex</span> <span class="right-label">Female/Endosex</span>
-          </div>
-        </div>
-      </div>
-      <div class="slider-group">
-        <div class="slider-title">
-          Gender identity
-        </div>
-        <div class="slider-wrapper">
-          <input type="range" id="identity" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-          <div class="slider-track-labels">
-            <span class="left-label">Man/Cis</span> <span class="right-label">Woman/Cis</span>
-          </div>
-        </div>
-      </div>
-      <div class="slider-group">
-        <div class="slider-title">
-          Gender expression
-        </div>
-        <div class="slider-wrapper">
-          <input type="range" id="expression" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-          <div class="slider-track-labels">
-            <span class="left-label">Masculine</span> <span class="right-label">Feminine</span>
-          </div>
-        </div>
-      </div>
-      <div class="slider-group">
-        <div class="slider-title">
-          Sexual orientation
-        </div>
-        <div class="slider-wrapper">
-          <input type="range" id="orientation" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-          <div class="slider-track-labels">
-            <span class="left-label">Heterosexual</span> <span class="right-label">Homosexual</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="colorBlob"></div>
-    <div class="typing-text">
-      Gender is fluid like gradient colour and it's more than blue and pink.
-    </div>
-    <div class="footer">
-      Created by Cecilia Ka Hei WONG for educational use.
-    </div>
-  </div>
-  <canvas id="sparkles" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 5;"></canvas>
-  <script>
-        // Slider listeners
-        const sliders = ['sex', 'identity', 'expression', 'orientation'];
-        sliders.forEach(id => {
-            const slider = document.getElementById(id);
-            slider.addEventListener('input', (e) => {
-                let val = Math.round(e.target.value / 5) * 5;
-                e.target.value = val;
-                e.target.setAttribute('aria-valuetext', val + '%');
-                updateColorBlob();
-                createSparkles(e.clientX, e.clientY);
-            });
-        });
 
+        <div class="sliders">
+            <div class="slider-group">
+                <div class="slider-title">Sex assigned at birth</div>
+                <div class="slider-wrapper">
+                    <input type="range" id="sex" min="0" max="100" value="50" step="5" aria-valuetext="50%">
+                    <div class="slider-track-labels">
+                        <span class="left-label">Male/Endosex</span>
+                        <span class="right-label">Female/Endosex</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-group">
+                <div class="slider-title">Gender identity</div>
+                <div class="slider-wrapper">
+                    <input type="range" id="identity" min="0" max="100" value="50" step="5" aria-valuetext="50%">
+                    <div class="slider-track-labels">
+                        <span class="left-label">Man/Cis</span>
+                        <span class="right-label">Woman/Cis</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-group">
+                <div class="slider-title">Gender expression</div>
+                <div class="slider-wrapper">
+                    <input type="range" id="expression" min="0" max="100" value="50" step="5" aria-valuetext="50%">
+                    <div class="slider-track-labels">
+                        <span class="left-label">Masculine</span>
+                        <span class="right-label">Feminine</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-group">
+                <div class="slider-title">Sexual orientation</div>
+                <div class="slider-wrapper">
+                    <input type="range" id="orientation" min="0" max="100" value="50" step="5" aria-valuetext="50%">
+                    <div class="slider-track-labels">
+                        <span class="left-label">Heterosexual</span>
+                        <span class="right-label">Homosexual</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="colorBlob"></div>
+
+        <div class="typing-text">Gender is fluid like gradient colour and it's more than blue and pink.</div>
+
+        <div class="footer">Created by Cecilia Ka Hei WONG for educational use.</div>
+    </div>
+
+    <canvas id="sparkles" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 5;"></canvas>
+
+    <script>
+        // SYNC FIX: updateColorBlob called on every oninput event with immediate effect
         function updateColorBlob() {
-            // FIXED: Track individual slider colors and blend them
             const sexVal = parseInt(document.getElementById('sex').value) / 100;
             const identityVal = parseInt(document.getElementById('identity').value) / 100;
             const expressionVal = parseInt(document.getElementById('expression').value) / 100;
             const orientationVal = parseInt(document.getElementById('orientation').value) / 100;
 
-            // HSL for each slider's position
-            // Sex: blue #1E3A8A hsl(217,65%,29%) -> pink #BE185D hsl(340,75%,45%)
+            // HSL color endpoints for each slider
             const sexHue = 217 + (340 - 217) * sexVal;
             const sexSat = 65 + (75 - 65) * sexVal;
             const sexLight = 29 + (45 - 29) * sexVal;
 
-            // Identity: #334155 hsl(210,40%,28%) -> #C026D3 hsl(287,75%,55%)
             const identityHue = 210 + (287 - 210) * identityVal;
             const identitySat = 40 + (75 - 40) * identityVal;
             const identityLight = 28 + (55 - 28) * identityVal;
 
-            // Expression: #1F2937 hsl(220,28%,20%) -> #F472B6 hsl(330,80%,65%)
             const expressionHue = 220 + (330 - 220) * expressionVal;
             const expressionSat = 28 + (80 - 28) * expressionVal;
             const expressionLight = 20 + (65 - 20) * expressionVal;
 
-            // Orientation: #EA580C hsl(18,90%,45%) -> #8B5CF6 hsl(261,85%,65%)
             const orientationHue = 18 + (261 - 18) * orientationVal;
             const orientationSat = 90 + (85 - 90) * orientationVal;
             const orientationLight = 45 + (65 - 45) * orientationVal;
 
-            // Average HSL values across sliders
+            // Average HSL across all four sliders
             const avgHue = (sexHue + identityHue + expressionHue + orientationHue) / 4;
             const avgSat = (sexSat + identitySat + expressionSat + orientationSat) / 4;
             const avgLight = (sexLight + identityLight + expressionLight + orientationLight) / 4;
 
+            // Apply to blob with radial gradient
             const blob = document.getElementById('colorBlob');
-            blob.style.background = `radial-gradient(circle at 30% 30%, hsl(${avgHue}, ${avgSat}%, ${avgLight}%), 
-                                      hsl(${(avgHue + 30) % 360}, ${avgSat + 10}%, ${avgLight - 10}%), 
-                                      hsl(${(avgHue - 30 + 360) % 360}, ${avgSat}%, ${avgLight}))`;
+            blob.style.background = `radial-gradient(circle at 30% 30%, 
+                hsl(${avgHue}, ${avgSat}%, ${avgLight}%), 
+                hsl(${(avgHue + 40) % 360}, ${Math.max(avgSat - 10, 10)}%, ${avgLight + 10}%), 
+                hsl(${(avgHue - 40 + 360) % 360}, ${avgSat}%, ${avgLight - 5}%))`;
         }
+
+        // Attach oninput listeners to all sliders
+        const sliders = ['sex', 'identity', 'expression', 'orientation'];
+        sliders.forEach(id => {
+            const slider = document.getElementById(id);
+            // Snap to 5% increments
+            slider.addEventListener('input', (e) => {
+                let val = Math.round(e.target.value / 5) * 5;
+                e.target.value = val;
+                e.target.setAttribute('aria-valuetext', val + '%');
+                // SYNC: Update color blob immediately on every input
+                updateColorBlob();
+                // Trigger sparkles
+                createSparkles(e.clientX, e.clientY);
+            });
+        });
 
         // Sparkle particles on slider move
         function createSparkles(x, y) {
@@ -529,6 +529,6 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
-  </script>
+    </script>
 </body>
 </html>
