@@ -1,156 +1,255 @@
-<script>
-    const canvas = document.getElementById('genderCanvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    img.src = './printable-genderbread-person-c-a5-1024x722-1.jpg';
-    
-    let gi = 50, ge = 50, sex = 50, so = 50;
-    
-    img.onload = () => {
-        console.log('Image loaded, starting morphs');
-        drawGenderbread();
-    };
-    img.onerror = () => {
-        console.error('Image load failed');
-        ctx.fillStyle = 'red';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    };
-    
-    function drawGenderbread() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queer Genderbread Explorer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
         
-        const giNorm = gi / 100; // 0=woman, 1=man
-        const geNorm = ge / 100; // 0=fem, 1=masc
-        
-        // Global composite for better blending
-        ctx.globalCompositeOperation = 'multiply'; // Darkens overlays over image
-        
-        // 1. HAIR - Much larger, covers head fully
-        ctx.globalAlpha = 0.8;
-        ctx.fillStyle = `hsl(${240 + giNorm * 60}, 70%, ${30 + giNorm * 30}%)`;
-        const hairScale = 1.5 + (1 - (giNorm + geNorm)/2) * 1.5; // 1.5-3x size
-        ctx.save();
-        ctx.translate(canvas.width/2, 80);
-        ctx.scale(hairScale, hairScale);
-        ctx.beginPath();
-        ctx.arc(0, 0, 100, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-        // Strands
-        ctx.globalAlpha = 0.6;
-        for (let i = 0; i < 15 + geNorm * 10; i++) {
-            ctx.strokeStyle = ctx.fillStyle + '80';
-            ctx.lineWidth = 5 - geNorm * 2;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(canvas.width/2 + (Math.sin(i)*80), 50 + Math.random()*30);
-            ctx.lineTo(canvas.width/2 + (Math.sin(i+1)*100), 150 + geNorm * 50);
-            ctx.stroke();
+        :root {
+            --rainbow-gradient: linear-gradient(135deg, #ff0000, #ff8c00, #ffff00, #00ff00, #0099ff, #4b0082, #9400d3);
+            --rainbow-glow: linear-gradient(135deg, #ff006e, #8338ec, #3a86ff, #06ffa5, #ffbe0b, #fb5607, #ff006e);
+            --bg-gradient: linear-gradient(135deg, #0c0c0c 0%, #1a0033 25%, #330066 50%, #6600cc 75%, #cc00ff 100%);
+            --card-glow: 0 0 30px rgba(255, 0, 110, 0.3);
         }
         
-        // 2. FACE - Larger oval overlay
-        ctx.globalAlpha = 0.7;
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.fillStyle = giNorm > 0.5 ? '#deb887' : '#ffe4e1'; // Tan to peach
-        ctx.save();
-        ctx.translate(canvas.width/2, 200);
-        ctx.scale(1.2, 1 + giNorm * 0.3);
-        ctx.beginPath();
-        ctx.ellipse(0, 0, 90, 110, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-        
-        // 3. BODY - Full torso/lower coverage
-        ctx.globalAlpha = 0.6;
-        ctx.fillStyle = '#f5deb3';
-        ctx.beginPath();
-        const shoulderW = 180 + geNorm * 120;
-        const waistW = 120 - (1-giNorm)*50 + geNorm*20;
-        const hipW = 160 + (1-giNorm)*60 - geNorm*40;
-        ctx.moveTo(canvas.width/2 - shoulderW/2, 280);
-        ctx.lineTo(canvas.width/2 + shoulderW/2, 280);
-        ctx.quadraticCurveTo(canvas.width/2 + shoulderW/2 * 0.8, 420, canvas.width/2 + waistW/2, 480);
-        ctx.lineTo(canvas.width/2 - waistW/2, 480);
-        ctx.quadraticCurveTo(canvas.width/2 - shoulderW/2 * 0.8, 420, canvas.width/2 - shoulderW/2, 280);
-        ctx.lineTo(canvas.width/2 + hipW/2, 550); // Hips curve
-        ctx.lineTo(canvas.width/2 - hipW/2, 550);
-        ctx.closePath();
-        ctx.fill();
-        
-        // Arms thicker
-        const armT = 30 + geNorm * 25;
-        ctx.fillRect(canvas.width/2 - shoulderW/2 - 10, 290, armT, 160);
-        ctx.fillRect(canvas.width/2 + shoulderW/2 - armT + 10, 290, armT, 160);
-        
-        // 4. CLOTHING - Prominent
-        ctx.globalAlpha = 0.9;
-        ctx.globalCompositeOperation = 'screen'; // Brightens
-        ctx.fillStyle = `hsl(${320 - giNorm * 140}, 80%, ${45 + (50 - geNorm * 25)}%)`;
-        if ((1 - giNorm - geNorm) > 0.2) { // Dress
-            ctx.beginPath();
-            ctx.ellipse(canvas.width/2, 520, hipW/1.5, 200, 0, 0, Math.PI * 2);
-            ctx.fill();
-        } else { // Shirt/pants
-            ctx.fillRect(canvas.width/2 - 80, 280, 160, 180);
-            ctx.fillRect(canvas.width/2 - 40, 460, 80, 150);
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg-gradient); 
+            min-height: 100vh; 
+            color: #fff; 
+            overflow-x: hidden;
+            animation: bgShift 20s ease infinite;
+        }
+        @keyframes bgShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
         
-        // 5. Sex symbols - Larger
-        ctx.globalAlpha = 0.5;
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.font = 'bold 80px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        if (sex / 100 < 0.5) {
-            ctx.fillText('♀', canvas.width * 0.2, canvas.height * 0.8);
-        } else if (sex / 100 > 0.5) {
-            ctx.fillText('♂', canvas.width * 0.8, canvas.height * 0.8);
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+        header { 
+            text-align: center; 
+            margin-bottom: 60px; 
+            background: var(--rainbow-glow); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text;
+            animation: rainbowShift 3s ease-in-out infinite alternate;
+        }
+        @keyframes rainbowShift {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; margin-bottom: 10px; }
+        .subtitle { font-size: 1.3rem; font-weight: 300; opacity: 0.9; }
+        
+        #image-container { 
+            text-align: center; 
+            margin-bottom: 60px; 
+            position: relative; 
+            border-radius: 25px; 
+            overflow: hidden; 
+            box-shadow: var(--card-glow), 0 20px 60px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+        }
+        #image-container:hover { transform: scale(1.02); }
+        #genderbread-img { 
+            width: 100%; 
+            max-width: 1024px; 
+            height: auto; 
+            display: block;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.3));
+        }
+        #image-container::before {
+            content: ''; 
+            position: absolute; 
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: var(--rainbow-gradient); 
+            border-radius: 25px; 
+            z-index: -1; 
+            padding: 2px; 
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            animation: borderRotate 4s linear infinite;
+        }
+        @keyframes borderRotate {
+            100% { transform: rotate(360deg); }
         }
         
-        // 6. HEART - Bigger glow
-        ctx.globalAlpha = 1;
-        const soNorm = so / 100;
-        const heartX = canvas.width * 0.5;
-        const heartY = 320;
-        ctx.shadowColor = soNorm < 0.5 ? '#ff69b4' : '#4a90e2';
-        ctx.shadowBlur = 50;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
-        ctx.fillStyle = soNorm < 0.5 ? '#ff1493' : '#1e90ff';
-        ctx.beginPath();
-        ctx.moveTo(heartX, heartY);
-        ctx.bezierCurveTo(heartX, heartY-60, heartX-60, heartY-30, heartX-45, heartY+15);
-        ctx.bezierCurveTo(heartX-75, heartY+75, heartX, heartY+90, heartX, heartY+60);
-        ctx.bezierCurveTo(heartX, heartY+90, heartX+75, heartY+75, heartX+45, heartY+15);
-        ctx.bezierCurveTo(heartX+60, heartY-30, heartX, heartY-60, heartX, heartY);
-        ctx.closePath();
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.globalCompositeOperation = 'source-over';
+        .sliders-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; }
+        .slider-section { 
+            background: rgba(255,255,255,0.1); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 20px; 
+            padding: 35px; 
+            transition: all 0.3s ease;
+            box-shadow: var(--card-glow);
+        }
+        .slider-section:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 30px 80px rgba(255,0,110,0.4);
+        }
+        .slider-section h3 { 
+            font-size: 1.4rem; 
+            margin-bottom: 25px; 
+            background: var(--rainbow-glow); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            text-align: center;
+        }
+        .slider-container { 
+            display: flex; 
+            align-items: center; 
+            background: rgba(0,0,0,0.3); 
+            padding: 20px 25px; 
+            border-radius: 15px; 
+            margin-bottom: 15px;
+        }
+        .label { 
+            font-weight: 600; 
+            font-size: 1.1rem; 
+            min-width: 140px; 
+            text-align: center;
+            background: var(--rainbow-gradient); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+        }
+        input[type="range"] { 
+            flex: 1; 
+            height: 12px; 
+            border-radius: 10px; 
+            background: var(--rainbow-gradient); 
+            outline: none; 
+            -webkit-appearance: none;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+        input[type="range"]::-webkit-slider-thumb { 
+            -webkit-appearance: none; 
+            width: 30px; 
+            height: 30px; 
+            border-radius: 50%; 
+            background: var(--rainbow-glow); 
+            cursor: pointer; 
+            box-shadow: 0 5px 20px rgba(255,255,255,0.5);
+            animation: thumbPulse 2s ease-in-out infinite;
+        }
+        @keyframes thumbPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        input[type="range"]::-moz-range-thumb { 
+            width: 30px; height: 30px; border-radius: 50%; 
+            background: var(--rainbow-glow); cursor: pointer; 
+            box-shadow: 0 5px 20px rgba(255,255,255,0.5); border: none;
+        }
+        .value-display { 
+            font-size: 2rem; 
+            font-weight: 700; 
+            margin: 0 20px; 
+            background: var(--rainbow-glow); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            min-width: 60px; text-align: center;
+        }
         
-        console.log(`Redrawn: GI=${gi}, GE=${ge}`); // Debug
-    }
-    
-    // Slider handlers (unchanged, but call draw every time)
-    const sliders = { genderIdentity: 'gi', genderExpression: 'ge', biologicalSex: 'sex', sexualOrientation: 'so' };
-    Object.keys(sliders).forEach(id => {
-        const slider = document.getElementById(id);
-        const valueDisplay = document.getElementById(id === 'genderIdentity' ? 'giValue' : id === 'genderExpression' ? 'geValue' : id === 'biologicalSex' ? 'sexValue' : 'soValue');
-        const labelLeft = document.getElementById(id.replace(/([A-Z])/g, 'LabelLeft').toLowerCase().replace('labelleft', 'giLabelLeft') || /* fallback */ document.querySelector(`#${id}LabelLeft`)); // Fixed selector bug potential
-        const labelRight = document.getElementById(id.replace(/([A-Z])/g, 'LabelRight').toLowerCase().replace('labelright', 'giLabelRight') || document.querySelector(`#${id}LabelRight`));
+        @media (max-width: 768px) { 
+            .sliders-grid { grid-template-columns: 1fr; }
+            .slider-container { flex-direction: column; gap: 15px; }
+            .label { text-align: center; }
+        }
+        
+        footer { text-align: center; margin-top: 60px; opacity: 0.7; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌈 Queer Genderbread Explorer</h1>
+            <p class="subtitle">Slide to map your spectrums on the vibrant genderbread person</p>
+        </header>
+        
+        <div id="image-container">
+            <!-- Replace src with your uploaded image path on GitHub -->
+            <img id="genderbread-img" src="./printable-genderbread-person-c-a5-1024x722-1.jpg" alt="Genderbread Person" />
+        </div>
+        
+        <div class="sliders-grid">
+            <div class="slider-section">
+                <h3>💭 Gender Identity</h3>
+                <div class="slider-container">
+                    <div class="label" id="giLabelLeft">100% Woman-ness</div>
+                    <input type="range" id="genderIdentity" min="0" max="100" value="50">
+                    <div class="value-display" id="giValue">50%</div>
+                    <div class="label" id="giLabelRight">100% Man-ness</div>
+                </div>
+            </div>
+            
+            <div class="slider-section">
+                <h3>🎭 Gender Expression</h3>
+                <div class="slider-container">
+                    <div class="label" id="geLabelLeft">100% Femininity</div>
+                    <input type="range" id="genderExpression" min="0" max="100" value="50">
+                    <div class="value-display" id="geValue">50%</div>
+                    <div class="label" id="geLabelRight">100% Masculinity</div>
+                </div>
+            </div>
+            
+            <div class="slider-section">
+                <h3>🧬 Sex Assigned at Birth</h3>
+                <div class="slider-container">
+                    <div class="label" id="sexLabelLeft">100% Female</div>
+                    <input type="range" id="biologicalSex" min="0" max="100" value="50">
+                    <div class="value-display" id="sexValue">50%</div>
+                    <div class="label" id="sexLabelRight">100% Male</div>
+                </div>
+            </div>
+            
+            <div class="slider-section">
+                <h3>❤️ Sexual Orientation</h3>
+                <div class="slider-container">
+                    <div class="label" id="soLabelLeft">100% Women</div>
+                    <input type="range" id="sexualOrientation" min="0" max="100" value="50">
+                    <div class="value-display" id="soValue">50%</div>
+                    <div class="label" id="soLabelRight">100% Men</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>✨ Celebrate your unique spectrum ✨</footer>
+    </div>
 
-        slider.addEventListener('input', (e) => {
-            const value = parseInt(e.target.value);
-            window[sliders[id]] = value;
-            valueDisplay.textContent = `${value}%`;
-            const leftPct = 100 - value;
-            if (labelLeft) labelLeft.textContent = `${leftPct}% ${labelLeft.textContent.split('%')[1]?.trim() || labelLeft.textContent.split(' ')[1] || ''}`;
-            if (labelRight) labelRight.textContent = `${value}% ${labelRight.textContent.split('%')[1]?.trim() || labelRight.textContent.split(' ')[1] || ''}`;
-            drawGenderbread(); // Always redraw
+    <script>
+        const sliders = ['genderIdentity', 'genderExpression', 'biologicalSex', 'sexualOrientation'];
+        sliders.forEach(id => {
+            const slider = document.getElementById(id);
+            const valueDisplay = document.getElementById(id === 'genderIdentity' ? 'giValue' : 
+                                                      id === 'genderExpression' ? 'geValue' : 
+                                                      id === 'biologicalSex' ? 'sexValue' : 'soValue');
+            const labelLeft = document.getElementById(id === 'genderIdentity' ? 'giLabelLeft' : 
+                                                   id === 'genderExpression' ? 'geLabelLeft' : 
+                                                   id === 'biologicalSex' ? 'sexLabelLeft' : 'soLabelLeft');
+            const labelRight = document.getElementById(id === 'genderIdentity' ? 'giLabelRight' : 
+                                                    id === 'genderExpression' ? 'geLabelRight' : 
+                                                    id === 'biologicalSex' ? 'sexLabelRight' : 'soLabelRight');
+
+            slider.addEventListener('input', (e) => {
+                const value = parseInt(e.target.value);
+                valueDisplay.textContent = `${value}%`;
+                const leftPct = 100 - value;
+                labelLeft.textContent = `${leftPct}% ${labelLeft.textContent.split('% ')[1] || labelLeft.textContent.split('%')[1]}`;
+                labelRight.textContent = `${value}% ${labelRight.textContent.split('%')[1] || ''}`;
+            });
         });
-    });
-    
-    // Initial
-    setTimeout(drawGenderbread, 100);
-</script>
+        
+        // Image error fallback
+        document.getElementById('genderbread-img').onerror = function() {
+            this.style.display = 'none';
+            const container = document.getElementById('image-container');
+            container.innerHTML = '<div style="padding:50px;font-size:2rem;color:#ff6b9d;">🌈 Upload your Genderbread image to see it here!</div>';
+        };
+    </script>
+</body>
+</html>
