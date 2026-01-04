@@ -16,6 +16,31 @@
             --shimmer-light: rgba(255,255,255,0.3);
         }
 
+        /* SLIDER redesign START */
+        .slider-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(-45deg, var(--pink), var(--purple), var(--blue));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .slider-track-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .left-label { color: inherit; text-align: left; flex: 1; }
+        .right-label { color: inherit; text-align: right; flex: 1; }
+        /* SLIDER redesign END */
+
         * {
             margin: 0;
             padding: 0;
@@ -110,90 +135,127 @@
         .sliders {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 30px;
             margin: 40px 0;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
         }
 
+        /* SLIDER redesign START */
         .slider-group {
-            display: flex;
-            align-items: center;
-            gap: 15px;
             background: rgba(255,255,255,0.1);
-            padding: 15px;
+            padding: 20px;
             border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
         }
 
-        .slider-label {
-            font-weight: 700;
-            min-width: 150px;
-            text-align: left;
-            background: linear-gradient(-45deg, var(--pink), var(--purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .slider-container {
-            flex: 1;
+        .slider-wrapper {
             position: relative;
+            display: block;
         }
 
         input[type="range"] {
             width: 100%;
-            height: 8px;
+            height: 10px;
             -webkit-appearance: none;
             appearance: none;
-            background: linear-gradient(to right, var(--blue), var(--purple), var(--pink));
             border-radius: 10px;
             outline: none;
             cursor: pointer;
+            transition: filter 0.3s ease;
+        }
+
+        input[type="range"]:hover {
+            filter: hue-rotate(20deg) brightness(1.1);
+            animation: shimmerTrack 1s ease infinite;
+        }
+
+        @keyframes shimmerTrack {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(30deg); }
+        }
+
+        /* Sex slider colors */
+        #sex {
+            background: linear-gradient(to right, #1E3A8A, #BE185D);
+        }
+        #sex::-webkit-slider-thumb {
+            background: radial-gradient(circle, #1E3A8A, #BE185D, white);
+            box-shadow: 0 0 20px rgba(30,58,138,0.8), 0 0 30px rgba(190,24,93,0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Identity slider */
+        #identity {
+            background: linear-gradient(to right, #334155, #C026D3);
+        }
+        #identity::-webkit-slider-thumb {
+            background: radial-gradient(circle, #334155, #C026D3, #9370DB);
+            box-shadow: 0 0 25px #9370DB;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Expression slider */
+        #expression {
+            background: linear-gradient(to right, #1F2937, #F472B6);
+        }
+        #expression::-webkit-slider-thumb {
+            background: radial-gradient(circle, #1F2937, #F472B6, #E6E6FA);
+            box-shadow: 0 0 20px #E6E6FA;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Orientation slider */
+        #orientation {
+            background: linear-gradient(to right, #EA580C, #8B5CF6);
+        }
+        #orientation::-webkit-slider-thumb {
+            background: linear-gradient(45deg, #EA580C, #FF69B4, #8B5CF6);
+            box-shadow: 0 0 20px #FF69B4, inset 0 0 10px rgba(255,255,255,0.5);
+            backdrop-filter: blur(5px);
+            animation: rainbowSparkle 2s linear infinite;
+        }
+
+        @keyframes rainbowSparkle {
+            0%, 100% { filter: hue-rotate(0deg); }
+            33% { filter: hue-rotate(120deg); }
+            66% { filter: hue-rotate(240deg); }
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 25px;
-            height: 25px;
-            background: radial-gradient(circle, white, var(--purple));
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 0 20px var(--shimmer-light);
+            border: 2px solid white;
             transition: all 0.3s ease;
         }
 
         input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 30px white;
+            transform: scale(1.3);
+            box-shadow: 0 0 40px white;
         }
 
         input[type="range"]::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
+            width: 28px;
+            height: 28px;
             background: radial-gradient(circle, white, var(--purple));
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 0 20px var(--shimmer-light);
-            border: none;
+            border: 2px solid white;
         }
 
         input[type="range"]::-moz-range-track {
-            height: 8px;
-            background: linear-gradient(to right, var(--blue), var(--purple), var(--pink));
+            height: 10px;
             border-radius: 10px;
         }
-
-        .value-display {
-            min-width: 60px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            background: linear-gradient(-45deg, var(--pink), var(--blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        /* SLIDER redesign END */
 
         #colorBlob {
             width: 400px;
@@ -287,15 +349,15 @@
                 font-size: 1.5rem;
             }
 
-            .slider-group {
-                flex-direction: column;
-                align-items: stretch;
+            /* SLIDER redesign START */
+            .slider-title {
+                font-size: 1.1rem;
             }
 
-            .slider-label {
-                text-align: center;
-                min-width: auto;
+            .slider-track-labels {
+                font-size: 0.75rem;
             }
+            /* SLIDER redesign END */
         }
 
         /* Accessibility */
@@ -316,7 +378,7 @@
 <body>
     <button class="music-toggle" onclick="toggleMusic()" aria-label="Toggle background music">🎵</button>
     <audio id="bgMusic" loop>
-        <!-- Optional royalty-free synthwave; replace with actual URL from White Bat Audio or Uppbeat [web:8][web:18] -->
+        <!-- Optional royalty-free synthwave; replace with actual URL from White Bat Audio or Uppbeat -->
         <!-- <source src="https://whitebataudio.com/wp-content/uploads/2021/04/Oblivion.mp3" type="audio/mpeg"> -->
     </audio>
 
@@ -330,34 +392,48 @@
         </div>
 
         <div class="sliders">
+            <!-- SLIDER redesign START -->
             <div class="slider-group">
-                <label class="slider-label" for="sex">Sex assigned at birth / 出生時指定性別<br>(Left: Male/男, Right: Female/女, Center: Intersex/雙性)</label>
-                <div class="slider-container">
+                <div class="slider-title">Sex assigned at birth</div>
+                <div class="slider-wrapper">
                     <input type="range" id="sex" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-                    <span class="value-display" id="sexValue">50%</span>
+                    <div class="slider-track-labels">
+                        <span class="left-label">Male/Endosex</span>
+                        <span class="right-label">Female/Endosex</span>
+                    </div>
                 </div>
             </div>
             <div class="slider-group">
-                <label class="slider-label" for="identity">Gender Identity / 性別認同<br>(Left: Man/男人, Right: Woman/女人, Center: Non-binary/非二元)</label>
-                <div class="slider-container">
+                <div class="slider-title">Gender identity</div>
+                <div class="slider-wrapper">
                     <input type="range" id="identity" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-                    <span class="value-display" id="identityValue">50%</span>
+                    <div class="slider-track-labels">
+                        <span class="left-label">Man/Cis</span>
+                        <span class="right-label">Woman/Cis</span>
+                    </div>
                 </div>
             </div>
             <div class="slider-group">
-                <label class="slider-label" for="expression">Gender Expression / 性別表達<br>(Left: Masculine/陽剛, Right: Feminine/陰柔, Center: Androgynous/中性)</label>
-                <div class="slider-container">
+                <div class="slider-title">Gender expression</div>
+                <div class="slider-wrapper">
                     <input type="range" id="expression" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-                    <span class="value-display" id="expressionValue">50%</span>
+                    <div class="slider-track-labels">
+                        <span class="left-label">Masculine</span>
+                        <span class="right-label">Feminine</span>
+                    </div>
                 </div>
             </div>
             <div class="slider-group">
-                <label class="slider-label" for="orientation">Sexual Orientation / 性取向<br>(Left: Heterosexual/異性戀, Right: Homosexual/同性戀, Center: Bi/Pan/雙性/泛性)</label>
-                <div class="slider-container">
+                <div class="slider-title">Sexual orientation</div>
+                <div class="slider-wrapper">
                     <input type="range" id="orientation" min="0" max="100" value="50" step="5" aria-valuetext="50%">
-                    <span class="value-display" id="orientationValue">50%</span>
+                    <div class="slider-track-labels">
+                        <span class="left-label">Heterosexual</span>
+                        <span class="right-label">Homosexual</span>
+                    </div>
                 </div>
             </div>
+            <!-- SLIDER redesign END -->
         </div>
 
         <div id="colorBlob"></div>
@@ -370,15 +446,13 @@
     <canvas id="sparkles" style="position: fixed; top: 0; left: 0; pointer-events: none; z-index: 5;"></canvas>
 
     <script>
-        // Slider listeners with snap and real-time updates [web:24]
+        // Slider listeners - REMOVED value displays [web:24]
         const sliders = ['sex', 'identity', 'expression', 'orientation'];
         sliders.forEach(id => {
             const slider = document.getElementById(id);
-            const valueDisplay = document.getElementById(id + 'Value');
             slider.addEventListener('input', (e) => {
                 let val = Math.round(e.target.value / 5) * 5;
                 e.target.value = val;
-                valueDisplay.textContent = val + '%';
                 e.target.setAttribute('aria-valuetext', val + '%');
                 updateColorBlob();
                 createSparkles(e.clientX, e.clientY);
@@ -387,22 +461,15 @@
 
         function updateColorBlob() {
             const values = sliders.map(id => parseInt(document.getElementById(id).value));
-            const avg = values.reduce((a, b) => a + b, 0) / values.length / 100; // 0 to 1
-            // Map: 0 blue (240°), 0.5 purple/rainbow (300°?), 1 pink (320°); use HSL interpolation [web:27][web:37]
-            const hue = 240 + (320 - 240) * avg; // 240 to 320
-            const sat = 50 + 50 * Math.abs(avg - 0.5) * 2; // high at extremes
-            const light = 80 + 10 * (1 - Math.abs(avg - 0.5) * 2); // lighter at center
+            const avg = values.reduce((a, b) => a + b, 0) / values.length / 100;
+            const hue = 240 + (320 - 240) * avg;
+            const sat = 50 + 50 * Math.abs(avg - 0.5) * 2;
+            const light = 80 + 10 * (1 - Math.abs(avg - 0.5) * 2);
             const blob = document.getElementById('colorBlob');
             blob.style.background = `radial-gradient(circle, hsl(${hue}, ${sat}%, ${light}%), hsl(${hue - 60}, ${sat + 20}%, ${light - 10}%), hsl(${hue + 60}, ${sat}%, ${light}))`;
-            // Update slider tracks dynamically
-            sliders.forEach((id, i) => {
-                const slider = document.getElementById(id);
-                const progress = values[i] / 100;
-                slider.style.background = `linear-gradient(to right, var(--blue) 0%, hsl(${240 + progress * 80}, 70%, 60%) ${progress * 100}%, var(--pink) 100%)`;
-            });
         }
 
-        // Sparkle particles on slider move [web:26][web:31]
+        // Sparkle particles on slider move
         function createSparkles(x, y) {
             const canvas = document.getElementById('sparkles');
             const ctx = canvas.getContext('2d');
@@ -452,7 +519,7 @@
         // Initial update
         updateColorBlob();
 
-        // Typing animation [web:1]
+        // Typing animation
         const text = "Gender is fluid like gradient colour and it's more than blue and pink.";
         const typingEl = document.querySelector('.typing-text');
         let i = 0;
